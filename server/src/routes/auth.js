@@ -11,6 +11,21 @@ const generateToken = (userId) => {
     return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 
+// Helper function to generate verification token and expiry
+const generateVerificationData = () => {
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours from now
+    
+    console.log("Generated verification data:", {
+        token: verificationToken,
+        expires: verificationTokenExpires,
+        expiresISO: verificationTokenExpires.toISOString(),
+        hoursFromNow: 24
+    });
+    
+    return { verificationToken, verificationTokenExpires };
+};
+
 // Register user
 router.post("/register", async (req, res) => {
     try {
@@ -25,9 +40,8 @@ router.post("/register", async (req, res) => {
             });
         }
 
-        // Generate verification token
-        const verificationToken = crypto.randomBytes(32).toString('hex');
-        const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        // Generate verification token and expiry
+        const { verificationToken, verificationTokenExpires } = generateVerificationData();
 
         // Create new user
         const user = new User({
@@ -41,11 +55,18 @@ router.post("/register", async (req, res) => {
 
         await user.save();
 
+        console.log("✅ User created successfully:", {
+            email: user.email,
+            verificationToken: user.verificationToken,
+            verificationTokenExpires: user.verificationTokenExpires
+        });
+
         // Send verification email
         try {
             await sendVerificationEmail(email, verificationToken);
+            console.log("✅ Verification email sent to:", email);
         } catch (emailError) {
-            console.error("Failed to send verification email:", emailError);
+            console.error("❌ Failed to send verification email:", emailError);
             // Don't fail the registration if email fails
         }
 
@@ -60,7 +81,7 @@ router.post("/register", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Registration error:", error);
+        console.error("❌ Registration error:", error);
         res.status(500).json({
             success: false,
             message: "Registration failed",
@@ -69,27 +90,65 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// Verify email
+// Verify email - FIXED VERSION
 router.get("/verify-email/:token", async (req, res) => {
     try {
         const { token } = req.params;
 
-        const user = await User.findOne({
-            verificationToken: token,
-            verificationTokenExpires: { $gt: Date.now() }
+        console.log("🔍 Verification attempt:", {
+            token: token?.substring(0, 10) + "...", // Log only first 10 chars for security
+            tokenLength: token?.length,
+            currentTime: new Date().toISOString()
         });
 
+        // First, find user by token only
+        const user = await User.findOne({ verificationToken: token });
+        
         if (!user) {
+            console.log("❌ No user found with this verification token");
             return res.status(400).json({
                 success: false,
-                message: "Invalid or expired verification token"
+                message: "Invalid verification token"
             });
         }
 
+        console.log("✅ User found:", {
+            email: user.email,
+            isVerified: user.isVerified,
+            tokenExpires: user.verificationTokenExpires,
+            currentTime: new Date()
+        });
+
+        // Check if already verified
+        if (user.isVerified) {
+            console.log("ℹ️ Email already verified for:", user.email);
+            return res.json({
+                success: true,
+                message: "Email is already verified. You can login now."
+            });
+        }
+
+        // Check expiration with proper date handling
+        const expirationDate = new Date(user.verificationTokenExpires);
+        const currentDate = new Date();
+        
+        if (expirationDate < currentDate) {
+            const hoursExpired = Math.round((currentDate.getTime() - expirationDate.getTime()) / (1000 * 60 * 60));
+            console.log(`❌ Token expired ${hoursExpired} hours ago`);
+            
+            return res.status(400).json({
+                success: false,
+                message: "Verification token has expired. Please request a new verification email."
+            });
+        }
+
+        // Update user verification status
         user.isVerified = true;
         user.verificationToken = null;
         user.verificationTokenExpires = null;
         await user.save();
+
+        console.log("✅ Email verified successfully for:", user.email);
 
         res.json({
             success: true,
@@ -97,7 +156,7 @@ router.get("/verify-email/:token", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Email verification error:", error);
+        console.error("❌ Email verification error:", error);
         res.status(500).json({
             success: false,
             message: "Email verification failed",
@@ -140,6 +199,8 @@ router.post("/login", async (req, res) => {
         // Generate token
         const token = generateToken(user._id);
 
+        console.log("✅ Login successful for:", user.email);
+
         res.json({
             success: true,
             message: "Login successful",
@@ -156,7 +217,7 @@ router.post("/login", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Login error:", error);
+        console.error("❌ Login error:", error);
         res.status(500).json({
             success: false,
             message: "Login failed",
@@ -165,7 +226,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Resend verification email
+// Resend verification email - FIXED VERSION
 router.post("/resend-verification", async (req, res) => {
     try {
         const { email } = req.body;
@@ -184,14 +245,15 @@ router.post("/resend-verification", async (req, res) => {
                 message: "Email is already verified"
             });
         }
-
-        // Generate new verification token
-        const verificationToken = crypto.randomBytes(32).toString('hex');
-        const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        
+        // Generate new verification token and expiry
+        const { verificationToken, verificationTokenExpires } = generateVerificationData();
 
         user.verificationToken = verificationToken;
         user.verificationTokenExpires = verificationTokenExpires;
         await user.save();
+
+        console.log("✅ New verification token generated for:", email);
 
         // Send verification email
         await sendVerificationEmail(email, verificationToken);
@@ -202,7 +264,7 @@ router.post("/resend-verification", async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Resend verification error:", error);
+        console.error("❌ Resend verification error:", error);
         res.status(500).json({
             success: false,
             message: "Failed to resend verification email",

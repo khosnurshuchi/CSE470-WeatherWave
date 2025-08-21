@@ -1,8 +1,16 @@
 import { useAuth } from '../contexts/AuthContext';
-import { User, Mail, Phone, Shield, Calendar } from 'lucide-react';
-
+import { User, Mail, Phone, Shield, Calendar, Edit3, Settings, Activity, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Are you sure you want to logout?');
+    if (confirmLogout) {
+      logout();
+      alert('Logged out successfully!');
+    }
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -14,224 +22,419 @@ const Dashboard = () => {
     });
   };
 
+  // Parse user data
+  const handleEditProfile = () => {
+    navigate('/profile');
+  };
+
+
+  const handleSecuritySettings = () => {
+    alert('Security settings would be implemented here');
+  };
+
+  const handleActivityLog = () => {
+    alert('Activity log would be implemented here');
+  };
+
+  // Inline styles matching Login/Register theme
+  const containerStyle = {
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
+    padding: '2rem 1rem',
+    position: 'relative'
+  };
+
+  const cardStyle = {
+    background: 'rgba(255, 255, 255, 0.9)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: '1.5rem',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    border: '1px solid rgba(16, 185, 129, 0.2)',
+    padding: '2rem',
+    marginBottom: '2rem'
+  };
+
+  const headerCardStyle = {
+    ...cardStyle,
+    marginBottom: '2rem'
+  };
+
+  const statsCardStyle = {
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: '1rem',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+    border: '1px solid rgba(16, 185, 129, 0.2)',
+    padding: '1.5rem',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer'
+  };
+
+  const actionCardStyle = {
+    background: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(20px)',
+    borderRadius: '1rem',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+    border: '1px solid rgba(16, 185, 129, 0.2)',
+    padding: '2rem',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    color: 'inherit',
+    display: 'block'
+  };
+
+  const titleStyle = {
+    fontSize: '3rem',
+    fontWeight: 'bold',
+    background: 'linear-gradient(135deg, #047857, #065f46)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    marginBottom: '0.5rem'
+  };
+
+  const subtitleStyle = {
+    fontSize: '1rem',
+    color: '#6b7280',
+    marginBottom: '0'
+  };
+
+  const avatarStyle = {
+    width: '4rem',
+    height: '4rem',
+    background: 'linear-gradient(135deg, #047857, #065f46)',
+    borderRadius: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 10px 25px rgba(4, 120, 87, 0.3)'
+  };
+
+  const logoutButtonStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.75rem 1.5rem',
+    background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '0.75rem',
+    cursor: 'pointer',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    transition: 'all 0.2s ease',
+    boxShadow: '0 4px 14px 0 rgba(220, 38, 38, 0.3)'
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div style={containerStyle}>
+      
+
+      <div style={{ maxWidth: '80rem', margin: '0 auto', position: 'relative' }}>
         {/* Header */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="flex items-center justify-between">
+        <div style={headerCardStyle}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 style={titleStyle}>
                 Welcome back, {user?.fullName}!
               </h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <p style={subtitleStyle}>
                 Here's your account information and recent activity.
               </p>
             </div>
-            <div className="hidden sm:block">
-              <div className="flex items-center space-x-2">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">
-                    {user?.fullName?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={avatarStyle}>
+                <span style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5rem' }}>
+                  {user?.fullName?.charAt(0).toUpperCase()}
+                </span>
               </div>
+              <button
+                onClick={handleLogout}
+                style={logoutButtonStyle}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.02)';
+                  e.target.style.background = 'linear-gradient(135deg, #b91c1c, #991b1b)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                }}
+              >
+                <LogOut size={16} />
+                Logout
+              </button>
             </div>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Shield className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Account Status
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      {user?.isVerified ? (
-                        <span className="text-green-600">Verified</span>
-                      ) : (
-                        <span className="text-red-600">Unverified</span>
-                      )}
-                    </dd>
-                  </dl>
-                </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+          <div 
+            style={statsCardStyle}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-4px)';
+              e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ 
+                width: '3rem', 
+                height: '3rem', 
+                background: 'linear-gradient(135deg, #10b981, #047857)',
+                borderRadius: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '1rem'
+              }}>
+                <Shield color="white" size={20} />
+              </div>
+              <div>
+                <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', margin: '0' }}>
+                  Account Status
+                </p>
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: '0.25rem 0 0 0' }}>
+                  {user?.isVerified ? (
+                    <span style={{ color: '#047857' }}>Verified</span>
+                  ) : (
+                    <span style={{ color: '#ef4444' }}>Unverified</span>
+                  )}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Mail className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Email Status
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      Active
-                    </dd>
-                  </dl>
-                </div>
+          <div 
+            style={statsCardStyle}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-4px)';
+              e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ 
+                width: '3rem', 
+                height: '3rem', 
+                background: 'linear-gradient(135deg, #3b82f6, #1e40af)',
+                borderRadius: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '1rem'
+              }}>
+                <Mail color="white" size={20} />
+              </div>
+              <div>
+                <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', margin: '0' }}>
+                  Email Status
+                </p>
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: '0.25rem 0 0 0', color: '#047857' }}>
+                  Active
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <Calendar className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      Member Since
-                    </dt>
-                    <dd className="text-lg font-medium text-gray-900">
-                      {user?.createdAt ? formatDate(user.createdAt).split(',')[0] : 'Recently'}
-                    </dd>
-                  </dl>
-                </div>
+          <div 
+            style={statsCardStyle}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-4px)';
+              e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ 
+                width: '3rem', 
+                height: '3rem', 
+                background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                borderRadius: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: '1rem'
+              }}>
+                <Calendar color="white" size={20} />
+              </div>
+              <div>
+                <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', margin: '0' }}>
+                  Member Since
+                </p>
+                <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: '0.25rem 0 0 0', color: '#374151' }}>
+                  {user?.createdAt ? formatDate(user.createdAt).split(',')[0] : 'Recently'}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         {/* User Information Card */}
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-          <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">
-              Personal Information
-            </h3>
-            <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Your account details and contact information.
-            </p>
-          </div>
-          <div className="border-t border-gray-200">
-            <dl>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 flex items-center">
-                  <User className="h-4 w-4 mr-2" />
-                  Full Name
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user?.fullName}
-                </dd>
-              </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 flex items-center">
-                  <Mail className="h-4 w-4 mr-2" />
-                  Email Address
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user?.email}
-                </dd>
-              </div>
-              <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 flex items-center">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Phone Number
-                </dt>
-                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user?.phoneNumber}
-                </dd>
-              </div>
-              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 flex items-center">
-                  <Shield className="h-4 w-4 mr-2" />
-                  Verification Status
-                </dt>
-                <dd className="mt-1 text-sm sm:mt-0 sm:col-span-2">
-                  {user?.isVerified ? (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Verified
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                      Unverified
-                    </span>
-                  )}
-                </dd>
-              </div>
-              {user?.createdAt && (
-                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt className="text-sm font-medium text-gray-500 flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Account Created
-                  </dt>
-                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                    {formatDate(user.createdAt)}
-                  </dd>
+        <div style={cardStyle}>
+          <h3 style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: 'bold', 
+            color: '#047857', 
+            marginBottom: '0.5rem' 
+          }}>
+            Personal Information
+          </h3>
+          <p style={{ 
+            fontSize: '0.875rem', 
+            color: '#6b7280', 
+            marginBottom: '2rem' 
+          }}>
+            Your account details and contact information.
+          </p>
+          
+          <div style={{ display: 'grid', gap: '1.5rem' }}>
+            {[
+              { icon: User, label: 'Full Name', value: user?.fullName, color: '#047857' },
+              { icon: Mail, label: 'Email Address', value: user?.email, color: '#3b82f6' },
+              { icon: Phone, label: 'Phone Number', value: user?.phoneNumber, color: '#8b5cf6' },
+              { icon: Calendar, label: 'Account Created', value: user?.createdAt ? formatDate(user.createdAt) : 'Recently', color: '#f59e0b' }
+            ].map((item, index) => (
+              <div key={index} style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                padding: '1rem',
+                backgroundColor: index % 2 === 0 ? 'rgba(16, 185, 129, 0.05)' : 'white',
+                borderRadius: '0.75rem',
+                border: '1px solid rgba(16, 185, 129, 0.1)'
+              }}>
+                <div style={{ 
+                  width: '2.5rem', 
+                  height: '2.5rem', 
+                  backgroundColor: `${item.color}20`,
+                  borderRadius: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: '1rem'
+                }}>
+                  <item.icon color={item.color} size={20} />
                 </div>
-              )}
-            </dl>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#6b7280', margin: '0' }}>
+                    {item.label}
+                  </p>
+                  <p style={{ fontSize: '1rem', fontWeight: '500', color: '#374151', margin: '0.25rem 0 0 0' }}>
+                    {item.value}
+                  </p>
+                </div>
+                {item.label === 'Full Name' && user?.isVerified && (
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '1rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    backgroundColor: '#10b98120',
+                    color: '#047857'
+                  }}>
+                    Verified
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <a
-              href="/profile"
-              className="relative group bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-500 rounded-lg shadow hover:shadow-md transition-shadow"
-            >
-              <div>
-                <span className="rounded-lg inline-flex p-3 bg-blue-50 text-blue-700 ring-4 ring-white">
-                  <User className="h-6 w-6" />
-                </span>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-lg font-medium">
-                  <span className="absolute inset-0" />
-                  Edit Profile
-                </h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Update your personal information and contact details.
+        <div style={cardStyle}>
+          <h3 style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: 'bold', 
+            color: '#047857', 
+            marginBottom: '1.5rem' 
+          }}>
+            Quick Actions
+          </h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+            {[
+              { 
+                icon: Edit3, 
+                title: 'Edit Profile', 
+                description: 'Update your personal information and contact details.', 
+                gradient: 'linear-gradient(135deg, #3b82f6, #1e40af)', 
+                action: handleEditProfile 
+              },
+              { 
+                icon: Settings, 
+                title: 'Security Settings', 
+                description: 'Manage your password and security preferences.', 
+                gradient: 'linear-gradient(135deg, #10b981, #047857)',
+                action: handleSecuritySettings
+              },
+              { 
+                icon: Activity, 
+                title: 'Activity Log', 
+                description: 'View your recent account activity and login history.', 
+                gradient: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                action: handleActivityLog
+              }
+            ].map((action, index) => (
+              <div
+                key={index}
+                style={actionCardStyle}
+                onClick={action.action}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-4px)';
+                  e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+                }}
+              >
+                <div style={{ 
+                  width: '3.5rem', 
+                  height: '3.5rem', 
+                  background: action.gradient,
+                  borderRadius: '1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1.5rem',
+                  boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)'
+                }}>
+                  <action.icon color="white" size={24} />
+                </div>
+                <h4 style={{ 
+                  fontSize: '1.25rem', 
+                  fontWeight: 'bold', 
+                  color: '#374151', 
+                  marginBottom: '0.5rem',
+                  margin: '0 0 0.5rem 0'
+                }}>
+                  {action.title}
+                </h4>
+                <p style={{ 
+                  fontSize: '0.875rem', 
+                  color: '#6b7280', 
+                  lineHeight: '1.5',
+                  margin: '0'
+                }}>
+                  {action.description}
                 </p>
               </div>
-            </a>
-
-            <div className="relative group bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div>
-                <span className="rounded-lg inline-flex p-3 bg-green-50 text-green-700 ring-4 ring-white">
-                  <Shield className="h-6 w-6" />
-                </span>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-lg font-medium">Security Settings</h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Manage your password and security preferences.
-                </p>
-              </div>
-            </div>
-
-            <div className="relative group bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-              <div>
-                <span className="rounded-lg inline-flex p-3 bg-purple-50 text-purple-700 ring-4 ring-white">
-                  <Calendar className="h-6 w-6" />
-                </span>
-              </div>
-              <div className="mt-8">
-                <h3 className="text-lg font-medium">Activity Log</h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  View your recent account activity and login history.
-                </p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
+
     </div>
   );
 };

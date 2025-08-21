@@ -37,6 +37,15 @@ const userSchema = new mongoose.Schema({
     verificationTokenExpires: {
         type: Date,
         default: null
+    },
+    // ADD THESE TWO NEW FIELDS:
+    resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true

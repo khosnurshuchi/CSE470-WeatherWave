@@ -85,12 +85,34 @@ export const authAPI = {
       throw error.response?.data || { message: 'Failed to resend verification email' };
     }
   },
+  // Add this function to your authAPI object in paste-3.txt at line 60 (after resendVerification)
+
+  forgotPassword: async (email) => {
+    try {
+      const response = await api.post('/auth/forgot-password', { email });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to send reset link' };
+    }
+  },
+
+  resetPassword: async (token, newPassword) => {
+    try {
+      const response = await api.post('/auth/reset-password', { token, newPassword });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to reset password' };
+    }
+  },
+  
+    
 
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
 };
+
 
 // User API calls
 export const userAPI = {

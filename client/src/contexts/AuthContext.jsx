@@ -41,10 +41,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (userData, token) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-  };
+const login = (userData, token) => {
+  // Store in localStorage
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(userData));
+  
+  // Update state
+  setUser(userData);
+  setIsAuthenticated(true);
+};
 
   const logout = () => {
     authUtils.clearAuth();
