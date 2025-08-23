@@ -5,6 +5,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
+import weatherRoutes from "./routes/weather.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/weather", weatherRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB connected"))
