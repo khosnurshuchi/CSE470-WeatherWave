@@ -11,15 +11,6 @@ const locationSchema = new mongoose.Schema({
         required: [true, "Country is required"],
         trim: true
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: [true, "User ID is required"]
-    },
-    isDefault: {
-        type: Boolean,
-        default: false
-    },
     coordinates: {
         latitude: {
             type: Number,
@@ -35,24 +26,34 @@ const locationSchema = new mongoose.Schema({
 });
 
 // Methods
-locationSchema.methods.setLocation = function(city, country, coordinates) {
-    this.city = city;
-    this.country = country;
-    this.coordinates = coordinates;
-    return this.save();
-};
-
-locationSchema.methods.getLocation = function() {
+locationSchema.methods.getLocation = function () {
     return {
         id: this._id,
         city: this.city,
         country: this.country,
-        coordinates: this.coordinates,
-        isDefault: this.isDefault
+        coordinates: this.coordinates
     };
 };
 
+// Static method to find or create location
+locationSchema.statics.findOrCreate = async function (city, country, coordinates) {
+    let location = await this.findOne({
+        city: city.trim(),
+        country: country.trim()
+    });
+
+    if (!location) {
+        location = await this.create({
+            city: city.trim(),
+            country: country.trim(),
+            coordinates
+        });
+    }
+
+    return location;
+};
+
 // Index for efficient queries
-locationSchema.index({ userId: 1, city: 1, country: 1 });
+locationSchema.index({ city: 1, country: 1 }, { unique: true });
 
 export default mongoose.model("Location", locationSchema);

@@ -4,24 +4,14 @@ const timeStampSchema = new mongoose.Schema({
     time: {
         type: Date,
         required: [true, "Time is required"],
-        default: Date.now
-    },
-    weatherDataId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'WeatherData',
-        required: true
+        unique: true
     }
 }, {
     timestamps: true
 });
 
 // Methods
-timeStampSchema.methods.setTime = function(time) {
-    this.time = time || new Date();
-    return this.save();
-};
-
-timeStampSchema.methods.getTime = function() {
+timeStampSchema.methods.getTime = function () {
     return {
         id: this._id,
         time: this.time,
@@ -29,7 +19,28 @@ timeStampSchema.methods.getTime = function() {
     };
 };
 
+// Static method to find or create timestamp
+timeStampSchema.statics.findOrCreate = async function (time) {
+    let timestamp = await this.findOne({ time });
+
+    if (!timestamp) {
+        timestamp = await this.create({ time });
+    }
+
+    return timestamp;
+};
+
+// Static method to get timestamps within range
+timeStampSchema.statics.getTimeRange = async function (startTime, endTime) {
+    return await this.find({
+        time: {
+            $gte: startTime,
+            $lte: endTime
+        }
+    }).sort({ time: 1 });
+};
+
 // Index for efficient queries
-timeStampSchema.index({ weatherDataId: 1, time: -1 });
+timeStampSchema.index({ time: 1 });
 
 export default mongoose.model("TimeStamp", timeStampSchema);

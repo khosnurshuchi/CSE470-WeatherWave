@@ -15,7 +15,9 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PublicRoute from './components/PublicRoute';
 
-
+// Weather Pages
+import WeatherDashboard from './pages/WeatherDashboard';
+import LocationManager from './pages/LocationManager';
 
 // Loading component
 function LoadingScreen() {
@@ -64,55 +66,75 @@ function AppRouter() {
     <>
       <Navbar />
       <Routes>
-        
+
         {/* Public Routes - Only accessible when NOT authenticated */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-<Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route 
-          path="/forgot-password" 
-          element={<PublicRoute><ForgotPassword /></PublicRoute>} 
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route
+          path="/forgot-password"
+          element={<PublicRoute><ForgotPassword /></PublicRoute>}
         />
-        <Route 
-  path="/reset-password/:token" 
-  element={<PublicRoute><ResetPassword /></PublicRoute>} 
-/>
+        <Route
+          path="/reset-password/:token"
+          element={<PublicRoute><ResetPassword /></PublicRoute>}
+        />
+
         {/* Email verification routes - Always accessible */}
         <Route path="/verify-email/:token" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
         <Route path="/resend-verification" element={<PublicRoute><ResendVerification /></PublicRoute>} />
-        
+
         {/* Protected Routes - Require authentication and verification */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/profile" 
+
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          } 
+          }
         />
-        
+
+        {/* Weather Routes - Protected */}
+        <Route
+          path="/weather"
+          element={
+            <ProtectedRoute>
+              <WeatherDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/locations"
+          element={
+            <ProtectedRoute>
+              <LocationManager />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Default route */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
-            user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
-          } 
+            user ? <Navigate to="/weather" replace /> : <Navigate to="/login" replace />
+          }
         />
-        
+
         {/* Catch-all route */}
-        <Route 
-          path="*" 
+        <Route
+          path="*"
           element={
-            user ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
-          } 
+            user ? <Navigate to="/weather" replace /> : <Navigate to="/login" replace />
+          }
         />
       </Routes>
     </>
@@ -125,7 +147,7 @@ function App() {
       <Router>
         <div className="App">
           <AppRouter />
-          
+
           {/* Toast notifications */}
           <Toaster
             position="top-right"

@@ -53,12 +53,12 @@ const weatherAlertSchema = new mongoose.Schema({
 });
 
 // Methods
-weatherAlertSchema.methods.sendAlert = async function() {
+weatherAlertSchema.methods.sendAlert = async function () {
     // This method would typically send notifications (email, push, etc.)
     // For now, it just marks the alert as active and returns alert data
     this.isActive = true;
     await this.save();
-    
+
     return {
         id: this._id,
         severity: this.severity,
@@ -72,81 +72,109 @@ weatherAlertSchema.methods.sendAlert = async function() {
 };
 
 // Method to mark alert as read
-weatherAlertSchema.methods.markAsRead = function() {
+weatherAlertSchema.methods.markAsRead = function () {
     this.isRead = true;
     return this.save();
 };
 
 // Method to deactivate alert
-weatherAlertSchema.methods.deactivate = function() {
+weatherAlertSchema.methods.deactivate = function () {
     this.isActive = false;
     this.endTime = new Date();
     return this.save();
 };
 
-// Static method to create alert based on weather conditions
-weatherAlertSchema.statics.checkAndCreateAlerts = async function(weatherData) {
+// Static method to create alerts for users who have this location
+weatherAlertSchema.statics.createAlertsForLocation = async function (weatherData, locationId) {
+    const UserLocation = mongoose.model('UserLocation');
+
+    // Find all users who have this location
+    const userLocations = await UserLocation.find({ locationId }).populate('userId');
+
     const alerts = [];
-    
+    const alertConditions = await this.checkWeatherConditions(weatherData);
+
+    for (const userLocation of userLocations) {
+        for (const alertData of alertConditions) {
+            const alert = new this({
+                ...alertData,
+                weatherDataId: weatherData._id,
+                locationId: locationId,
+                userId: userLocation.userId._id
+            });
+
+            await alert.save();
+            await alert.sendAlert();
+            alerts.push(alert);
+        }
+    }
+
+    return alerts;
+};
+
+// Static method to check weather conditions and determine alert types
+weatherAlertSchema.statics.checkWeatherConditions = async function (weatherData) {
+    const alerts = [];
+
     // Temperature alerts
     if (weatherData.temperature > 35) {
         alerts.push({
             severity: 'high',
             message: `Extreme heat warning: ${weatherData.temperature}°${weatherData.temperatureType.charAt(0).toUpperCase()}`,
-            alertCondition: 'extreme_heat',
-            weatherDataId: weatherData._id,
-            locationId: weatherData.locationId
+            alertCondition: 'extreme_heat'
         });
     } else if (weatherData.temperature < -10) {
         alerts.push({
             severity: 'high',
             message: `Extreme cold warning: ${weatherData.temperature}°${weatherData.temperatureType.charAt(0).toUpperCase()}`,
-            alertCondition: 'extreme_cold',
-            weatherDataId: weatherData._id,
-            locationId: weatherData.locationId
+            alertCondition: 'extreme_cold'
         });
     }
-    
+
     // Wind speed alerts
     if (weatherData.windSpeed > 50) {
         alerts.push({
             severity: 'moderate',
             message: `High wind warning: ${weatherData.windSpeed} ${weatherData.windSpeedType}`,
-            alertCondition: 'high_wind',
-            weatherDataId: weatherData._id,
-            locationId: weatherData.locationId
+            alertCondition: 'high_wind'
         });
     }
-    
+
     // Weather condition alerts
     const rainConditions = ['rain', 'heavy rain', 'thunderstorm'];
     const snowConditions = ['snow', 'heavy snow', 'blizzard'];
-    
+
     if (rainConditions.some(condition => weatherData.description.toLowerCase().includes(condition))) {
         alerts.push({
-            severity: 'low',
+            severity: weatherData.description.toLowerCase().includes('heavy') ? 'moderate' : 'low',
             message: `Rain alert: ${weatherData.description}`,
-            alertCondition: weatherData.description.toLowerCase().includes('thunder') ? 'thunderstorm' : 'rain',
-            weatherDataId: weatherData._id,
-            locationId: weatherData.locationId
+            alertCondition: weatherData.description.toLowerCase().includes('thunder') ? 'thunderstorm' : 'rain'
         });
     }
-    
+
     if (snowConditions.some(condition => weatherData.description.toLowerCase().includes(condition))) {
         alerts.push({
             severity: 'moderate',
             message: `Snow alert: ${weatherData.description}`,
-            alertCondition: 'snow',
-            weatherDataId: weatherData._id,
-            locationId: weatherData.locationId
+            alertCondition: 'snow'
         });
     }
-    
+
+    // UV Index alerts
+    if (weatherData.uvIndex && weatherData.uvIndex > 8) {
+        alerts.push({
+            severity: 'low',
+            message: `High UV warning: UV Index ${weatherData.uvIndex}`,
+            alertCondition: 'uv_warning'
+        });
+    }
+
     return alerts;
 };
 
 // Index for efficient queries
 weatherAlertSchema.index({ userId: 1, isActive: 1, createdAt: -1 });
 weatherAlertSchema.index({ locationId: 1, alertCondition: 1 });
+weatherAlertSchema.index({ weatherDataId: 1 });
 
 export default mongoose.model("WeatherAlert", weatherAlertSchema);

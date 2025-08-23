@@ -1,5 +1,6 @@
 import express from "express";
 import Location from "../models/Location.js";
+import UserLocation from "../models/UserLocation.js";
 import WeatherData from "../models/WeatherData.js";
 import WeatherAlert from "../models/WeatherAlert.js";
 import TimeStamp from "../models/TimeStamp.js";
@@ -10,16 +11,20 @@ const router = express.Router();
 // Get all user locations with current weather
 router.get("/locations", authenticateToken, async (req, res) => {
     try {
-        const locations = await Location.find({ userId: req.userId }).sort({ isDefault: -1, createdAt: -1 });
-        
+        const userLocations = await UserLocation.find({ userId: req.userId })
+            .populate('locationId')
+            .sort({ isDefault: -1, createdAt: -1 });
+
         const locationsWithWeather = await Promise.all(
-            locations.map(async (location) => {
-                const latestWeather = await WeatherData.findOne({ locationId: location._id })
-                    .sort({ createdAt: -1 })
-                    .limit(1);
-                
+            userLocations.map(async (userLocation) => {
+                const latestWeather = await WeatherData.getLatestForLocation(userLocation.locationId._id);
+
                 return {
-                    ...location.toObject(),
+                    userLocationId: userLocation._id,
+                    location: userLocation.locationId,
+                    isDefault: userLocation.isDefault,
+                    nickname: userLocation.nickname,
+                    addedAt: userLocation.createdAt,
                     currentWeather: latestWeather
                 };
             })
@@ -40,10 +45,10 @@ router.get("/locations", authenticateToken, async (req, res) => {
     }
 });
 
-// Add new location
+// Add new location for user
 router.post("/locations", authenticateToken, async (req, res) => {
     try {
-        const { city, country, coordinates, isDefault = false } = req.body;
+        const { city, country, coordinates, isDefault = false, nickname } = req.body;
 
         if (!city || !country || !coordinates) {
             return res.status(400).json({
@@ -52,43 +57,41 @@ router.post("/locations", authenticateToken, async (req, res) => {
             });
         }
 
-        // Check if location already exists for this user
-        const existingLocation = await Location.findOne({
-            userId: req.userId,
-            city: city.toLowerCase(),
-            country: country.toLowerCase()
-        });
+        // Find or create the location in the global locations table
+        const location = await Location.findOrCreate(city, country, coordinates);
 
-        if (existingLocation) {
-            return res.status(400).json({
-                success: false,
-                message: "Location already exists"
-            });
-        }
-
-        // If this is set as default, remove default from other locations
-        if (isDefault) {
-            await Location.updateMany(
-                { userId: req.userId },
-                { isDefault: false }
+        try {
+            // Add the location for this user
+            const userLocation = await UserLocation.addLocationForUser(
+                req.userId,
+                location._id,
+                isDefault,
+                nickname
             );
+
+            await userLocation.populate('locationId');
+
+            res.status(201).json({
+                success: true,
+                message: "Location added successfully",
+                data: {
+                    userLocationId: userLocation._id,
+                    location: userLocation.locationId,
+                    isDefault: userLocation.isDefault,
+                    nickname: userLocation.nickname,
+                    addedAt: userLocation.createdAt
+                }
+            });
+
+        } catch (userLocationError) {
+            if (userLocationError.message.includes('already added')) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Location already exists in your list"
+                });
+            }
+            throw userLocationError;
         }
-
-        const location = new Location({
-            city,
-            country,
-            coordinates,
-            userId: req.userId,
-            isDefault
-        });
-
-        await location.save();
-
-        res.status(201).json({
-            success: true,
-            message: "Location added successfully",
-            data: location
-        });
 
     } catch (error) {
         console.error("Add location error:", error);
@@ -100,27 +103,31 @@ router.post("/locations", authenticateToken, async (req, res) => {
     }
 });
 
-// Remove location
-router.delete("/locations/:locationId", authenticateToken, async (req, res) => {
+// Remove location from user's list
+router.delete("/locations/:userLocationId", authenticateToken, async (req, res) => {
     try {
-        const { locationId } = req.params;
+        const { userLocationId } = req.params;
 
-        const location = await Location.findOne({ 
-            _id: locationId, 
-            userId: req.userId 
+        const userLocation = await UserLocation.findOne({
+            _id: userLocationId,
+            userId: req.userId
         });
 
-        if (!location) {
+        if (!userLocation) {
             return res.status(404).json({
                 success: false,
-                message: "Location not found"
+                message: "Location not found in your list"
             });
         }
 
-        // Delete associated weather data and alerts
-        await WeatherData.deleteMany({ locationId });
-        await WeatherAlert.deleteMany({ locationId });
-        await Location.findByIdAndDelete(locationId);
+        // Delete user's alerts for this location
+        await WeatherAlert.deleteMany({
+            locationId: userLocation.locationId,
+            userId: req.userId
+        });
+
+        // Remove from user's location list
+        await UserLocation.findByIdAndDelete(userLocationId);
 
         res.json({
             success: true,
@@ -138,34 +145,34 @@ router.delete("/locations/:locationId", authenticateToken, async (req, res) => {
 });
 
 // Set default location
-router.put("/locations/:locationId/default", authenticateToken, async (req, res) => {
+router.put("/locations/:userLocationId/default", authenticateToken, async (req, res) => {
     try {
-        const { locationId } = req.params;
+        const { userLocationId } = req.params;
 
-        // Remove default from all locations
-        await Location.updateMany(
-            { userId: req.userId },
-            { isDefault: false }
-        );
+        const userLocation = await UserLocation.findOne({
+            _id: userLocationId,
+            userId: req.userId
+        });
 
-        // Set new default
-        const location = await Location.findOneAndUpdate(
-            { _id: locationId, userId: req.userId },
-            { isDefault: true },
-            { new: true }
-        );
-
-        if (!location) {
+        if (!userLocation) {
             return res.status(404).json({
                 success: false,
                 message: "Location not found"
             });
         }
 
+        await userLocation.setAsDefault();
+        await userLocation.populate('locationId');
+
         res.json({
             success: true,
             message: "Default location updated",
-            data: location
+            data: {
+                userLocationId: userLocation._id,
+                location: userLocation.locationId,
+                isDefault: userLocation.isDefault,
+                nickname: userLocation.nickname
+            }
         });
 
     } catch (error) {
@@ -184,21 +191,20 @@ router.get("/locations/:locationId/weather", authenticateToken, async (req, res)
         const { locationId } = req.params;
         const { unit = 'celsius' } = req.query;
 
-        const location = await Location.findOne({ 
-            _id: locationId, 
-            userId: req.userId 
-        });
+        // Verify user has access to this location
+        const userLocation = await UserLocation.findOne({
+            locationId,
+            userId: req.userId
+        }).populate('locationId');
 
-        if (!location) {
+        if (!userLocation) {
             return res.status(404).json({
                 success: false,
-                message: "Location not found"
+                message: "Location not found in your list"
             });
         }
 
-        const weatherData = await WeatherData.findOne({ locationId })
-            .sort({ createdAt: -1 })
-            .populate('locationId');
+        const weatherData = await WeatherData.getLatestForLocation(locationId);
 
         if (!weatherData) {
             return res.status(404).json({
@@ -207,14 +213,17 @@ router.get("/locations/:locationId/weather", authenticateToken, async (req, res)
             });
         }
 
+        await weatherData.populate(['locationId', 'timestampId']);
+
         // Convert temperature and wind speed if needed
         const convertedWeather = {
             ...weatherData.toObject(),
             temperature: weatherData.convertTemperature(unit),
             temperatureType: unit,
-            feelsLike: weatherData.feelsLike ? 
-                (unit === weatherData.temperatureType ? weatherData.feelsLike : 
-                 (unit === 'celsius' ? (weatherData.feelsLike - 32) * 5/9 : (weatherData.feelsLike * 9/5) + 32)) : null
+            feelsLike: weatherData.feelsLike ?
+                weatherData.convertTemperature(unit) : null,
+            location: weatherData.locationId,
+            timestamp: weatherData.timestampId
         };
 
         res.json({
@@ -238,30 +247,37 @@ router.get("/locations/:locationId/hourly", authenticateToken, async (req, res) 
         const { locationId } = req.params;
         const { unit = 'celsius', hours = 24 } = req.query;
 
-        const location = await Location.findOne({ 
-            _id: locationId, 
-            userId: req.userId 
+        // Verify user has access to this location
+        const userLocation = await UserLocation.findOne({
+            locationId,
+            userId: req.userId
         });
 
-        if (!location) {
+        if (!userLocation) {
             return res.status(404).json({
                 success: false,
-                message: "Location not found"
+                message: "Location not found in your list"
             });
         }
 
         const hoursAgo = new Date(Date.now() - (hours * 60 * 60 * 1000));
-        
-        const hourlyData = await WeatherData.find({ 
-            locationId,
-            createdAt: { $gte: hoursAgo }
-        }).sort({ createdAt: -1 }).limit(parseInt(hours));
+        const now = new Date();
+
+        const hourlyData = await WeatherData.getLocationHistory(locationId, hoursAgo, now, parseInt(hours));
 
         const convertedData = hourlyData.map(data => ({
-            ...data.toObject(),
-            temperature: data.convertTemperature(unit),
+            ...data,
+            temperature: unit === data.temperatureType ?
+                data.temperature :
+                (unit === 'celsius' ?
+                    (data.temperature - 32) * 5 / 9 :
+                    (data.temperature * 9 / 5) + 32),
             temperatureType: unit,
-            feelsLike: data.feelsLike ? data.convertTemperature(unit) : null
+            feelsLike: data.feelsLike && unit !== data.temperatureType ?
+                (unit === 'celsius' ?
+                    (data.feelsLike - 32) * 5 / 9 :
+                    (data.feelsLike * 9 / 5) + 32) :
+                data.feelsLike
         }));
 
         res.json({
@@ -283,7 +299,7 @@ router.get("/locations/:locationId/hourly", authenticateToken, async (req, res) 
 router.get("/alerts", authenticateToken, async (req, res) => {
     try {
         const { isActive = true, limit = 50 } = req.query;
-        
+
         const query = { userId: req.userId };
         if (isActive !== 'all') {
             query.isActive = isActive === 'true';
@@ -291,7 +307,14 @@ router.get("/alerts", authenticateToken, async (req, res) => {
 
         const alerts = await WeatherAlert.find(query)
             .populate('locationId', 'city country')
-            .populate('weatherDataId', 'temperature description')
+            .populate({
+                path: 'weatherDataId',
+                select: 'temperature description',
+                populate: {
+                    path: 'timestampId',
+                    select: 'time'
+                }
+            })
             .sort({ createdAt: -1 })
             .limit(parseInt(limit));
 
@@ -315,9 +338,9 @@ router.put("/alerts/:alertId/read", authenticateToken, async (req, res) => {
     try {
         const { alertId } = req.params;
 
-        const alert = await WeatherAlert.findOne({ 
-            _id: alertId, 
-            userId: req.userId 
+        const alert = await WeatherAlert.findOne({
+            _id: alertId,
+            userId: req.userId
         });
 
         if (!alert) {
@@ -349,9 +372,9 @@ router.put("/alerts/:alertId/dismiss", authenticateToken, async (req, res) => {
     try {
         const { alertId } = req.params;
 
-        const alert = await WeatherAlert.findOne({ 
-            _id: alertId, 
-            userId: req.userId 
+        const alert = await WeatherAlert.findOne({
+            _id: alertId,
+            userId: req.userId
         });
 
         if (!alert) {
@@ -378,56 +401,45 @@ router.put("/alerts/:alertId/dismiss", authenticateToken, async (req, res) => {
     }
 });
 
-// Update weather data (simulate fetching new data)
+// Update weather data (simulate fetching new data from weather API)
 router.post("/locations/:locationId/update", authenticateToken, async (req, res) => {
     try {
         const { locationId } = req.params;
         const weatherUpdate = req.body;
 
-        const location = await Location.findOne({ 
-            _id: locationId, 
-            userId: req.userId 
+        // Verify user has access to this location
+        const userLocation = await UserLocation.findOne({
+            locationId,
+            userId: req.userId
         });
 
-        if (!location) {
+        if (!userLocation) {
             return res.status(404).json({
                 success: false,
-                message: "Location not found"
+                message: "Location not found in your list"
             });
         }
+
+        // Create or get timestamp
+        const timestamp = await TimeStamp.findOrCreate(new Date());
 
         // Create new weather data
         const weatherData = new WeatherData({
             ...weatherUpdate,
-            locationId
+            locationId,
+            timestampId: timestamp._id
         });
 
         await weatherData.save();
 
-        // Create timestamp
-        const timestamp = new TimeStamp({
-            weatherDataId: weatherData._id
-        });
-
-        await timestamp.save();
-
-        // Check for alerts
-        const alertConditions = await WeatherAlert.checkAndCreateAlerts(weatherData);
-        
-        for (const alertData of alertConditions) {
-            const alert = new WeatherAlert({
-                ...alertData,
-                userId: req.userId
-            });
-            await alert.save();
-            await alert.sendAlert();
-        }
+        // Create alerts for all users who have this location
+        const alerts = await WeatherAlert.createAlertsForLocation(weatherData, locationId);
 
         res.json({
             success: true,
             message: "Weather data updated successfully",
-            data: weatherData,
-            alerts: alertConditions.length
+            data: await weatherData.fetchData(),
+            alertsCreated: alerts.length
         });
 
     } catch (error) {
@@ -435,6 +447,60 @@ router.post("/locations/:locationId/update", authenticateToken, async (req, res)
         res.status(500).json({
             success: false,
             message: "Failed to update weather data",
+            error: error.message
+        });
+    }
+});
+
+// Get all available locations (for search/autocomplete)
+router.get("/search", authenticateToken, async (req, res) => {
+    try {
+        const { q } = req.query;
+
+        if (!q || q.length < 2) {
+            return res.status(400).json({
+                success: false,
+                message: "Search query must be at least 2 characters"
+            });
+        }
+
+        const locations = await Location.find({
+            $or: [
+                { city: { $regex: q, $options: 'i' } },
+                { country: { $regex: q, $options: 'i' } }
+            ]
+        }).limit(10);
+
+        res.json({
+            success: true,
+            data: locations
+        });
+
+    } catch (error) {
+        console.error("Search locations error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to search locations",
+            error: error.message
+        });
+    }
+});
+
+// Get all available locations
+router.get("/locations/all", authenticateToken, async (req, res) => {
+    try {
+        const locations = await Location.find({}).sort({ country: 1, city: 1 });
+
+        res.json({
+            success: true,
+            data: locations
+        });
+
+    } catch (error) {
+        console.error("Get all locations error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to get all locations",
             error: error.message
         });
     }

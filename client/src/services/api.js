@@ -57,11 +57,11 @@ export const authAPI = {
     try {
       const response = await api.post('/auth/login', credentials);
       const { token, user } = response.data.data;
-      
+
       // Store token and user data
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-      
+
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Login failed' };
@@ -85,7 +85,6 @@ export const authAPI = {
       throw error.response?.data || { message: 'Failed to resend verification email' };
     }
   },
-  // Add this function to your authAPI object in paste-3.txt at line 60 (after resendVerification)
 
   forgotPassword: async (email) => {
     try {
@@ -104,15 +103,12 @@ export const authAPI = {
       throw error.response?.data || { message: 'Failed to reset password' };
     }
   },
-  
-    
 
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
 };
-
 
 // User API calls
 export const userAPI = {
@@ -128,12 +124,12 @@ export const userAPI = {
   updateProfile: async (userData) => {
     try {
       const response = await api.put('/user/profile', userData);
-      
+
       // Update stored user data
       const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
       const updatedUser = { ...currentUser, ...response.data.data };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      
+
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Failed to update profile' };
@@ -152,11 +148,11 @@ export const userAPI = {
   deleteAccount: async () => {
     try {
       const response = await api.delete('/user/account');
-      
+
       // Clear stored data
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      
+
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Failed to delete account' };
@@ -164,21 +160,142 @@ export const userAPI = {
   }
 };
 
+// Weather API calls
+export const weatherAPI = {
+  // Get all user locations with current weather
+  getLocations: async () => {
+    try {
+      const response = await api.get('/weather/locations');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get locations' };
+    }
+  },
+
+  // Add new location - NOW SUPPORTS NICKNAME
+  addLocation: async (locationData) => {
+    try {
+      const response = await api.post('/weather/locations', locationData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to add location' };
+    }
+  },
+
+  // Remove location - NOW USES userLocationId
+  removeLocation: async (userLocationId) => {
+    try {
+      const response = await api.delete(`/weather/locations/${userLocationId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to remove location' };
+    }
+  },
+
+  // Set default location - NOW USES userLocationId
+  setDefaultLocation: async (userLocationId) => {
+    try {
+      const response = await api.put(`/weather/locations/${userLocationId}/default`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to set default location' };
+    }
+  },
+
+  // NEW: Search locations for autocomplete
+  searchLocations: async (query) => {
+    try {
+      const response = await api.get(`/weather/search?q=${encodeURIComponent(query)}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to search locations' };
+    }
+  },
+
+  // NEW: Get all available locations
+  getAllLocations: async () => {
+    try {
+      const response = await api.get('/weather/locations/all');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get all locations' };
+    }
+  },
+
+  // Get weather data for specific location - STILL USES locationId (global location ID)
+  getLocationWeather: async (locationId, unit = 'celsius') => {
+    try {
+      const response = await api.get(`/weather/locations/${locationId}/weather?unit=${unit}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get weather data' };
+    }
+  },
+
+  // Get hourly weather trends - STILL USES locationId (global location ID)
+  getHourlyTrends: async (locationId, unit = 'celsius', hours = 24) => {
+    try {
+      const response = await api.get(`/weather/locations/${locationId}/hourly?unit=${unit}&hours=${hours}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get hourly trends' };
+    }
+  },
+
+  // Update weather data - STILL USES locationId (global location ID)
+  updateWeatherData: async (locationId, weatherData) => {
+    try {
+      const response = await api.post(`/weather/locations/${locationId}/update`, weatherData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to update weather data' };
+    }
+  },
+
+  // Weather alerts - NO CHANGES
+  getAlerts: async (isActive = true, limit = 50) => {
+    try {
+      const response = await api.get(`/weather/alerts?isActive=${isActive}&limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get weather alerts' };
+    }
+  },
+
+  markAlertAsRead: async (alertId) => {
+    try {
+      const response = await api.put(`/weather/alerts/${alertId}/read`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to mark alert as read' };
+    }
+  },
+
+  dismissAlert: async (alertId) => {
+    try {
+      const response = await api.put(`/weather/alerts/${alertId}/dismiss`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to dismiss alert' };
+    }
+  }
+};
+
 // Auth utility functions
 export const authUtils = {
   getToken: () => localStorage.getItem('token'),
-  
+
   getUser: () => {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   },
-  
+
   isAuthenticated: () => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
     return !!(token && user);
   },
-  
+
   clearAuth: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

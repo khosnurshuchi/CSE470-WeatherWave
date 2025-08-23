@@ -4,8 +4,6 @@
       "_id": "507f1f77bcf86cd799439021",
       "city": "New York",
       "country": "United States",
-      "userId": "68a74c127bdc06bd171f463a",
-      "isDefault": true,
       "coordinates": {
         "latitude": 40.7128,
         "longitude": -74.0060
@@ -17,8 +15,6 @@
       "_id": "507f1f77bcf86cd799439022",
       "city": "London",
       "country": "United Kingdom",
-      "userId": "68a74c127bdc06bd171f463a",
-      "isDefault": false,
       "coordinates": {
         "latitude": 51.5074,
         "longitude": -0.1278
@@ -30,8 +26,6 @@
       "_id": "507f1f77bcf86cd799439023",
       "city": "Tokyo",
       "country": "Japan",
-      "userId": "68a74c127bdc06bd171f463a",
-      "isDefault": false,
       "coordinates": {
         "latitude": 35.6762,
         "longitude": 139.6503
@@ -43,8 +37,6 @@
       "_id": "507f1f77bcf86cd799439024",
       "city": "Paris",
       "country": "France",
-      "userId": "68a9c7ea585fdd00aa2173ff",
-      "isDefault": true,
       "coordinates": {
         "latitude": 48.8566,
         "longitude": 2.3522
@@ -56,8 +48,6 @@
       "_id": "507f1f77bcf86cd799439025",
       "city": "Sydney",
       "country": "Australia",
-      "userId": "68a9c7ea585fdd00aa2173ff",
-      "isDefault": false,
       "coordinates": {
         "latitude": -33.8688,
         "longitude": 151.2093
@@ -69,14 +59,137 @@
       "_id": "507f1f77bcf86cd799439026",
       "city": "Dubai",
       "country": "UAE",
-      "userId": "68a74c127bdc06bd171f463a",
-      "isDefault": false,
       "coordinates": {
         "latitude": 25.2048,
         "longitude": 55.2708
       },
       "createdAt": "2024-01-17T09:00:00.000Z",
       "updatedAt": "2024-01-17T09:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439027",
+      "city": "Mumbai",
+      "country": "India",
+      "coordinates": {
+        "latitude": 19.0760,
+        "longitude": 72.8777
+      },
+      "createdAt": "2024-01-17T10:00:00.000Z",
+      "updatedAt": "2024-01-17T10:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439028",
+      "city": "Berlin",
+      "country": "Germany",
+      "coordinates": {
+        "latitude": 52.5200,
+        "longitude": 13.4050
+      },
+      "createdAt": "2024-01-17T11:00:00.000Z",
+      "updatedAt": "2024-01-17T11:00:00.000Z"
+    }
+  ],
+  "userlocations": [
+    {
+      "_id": "507f1f77bcf86cd799439071",
+      "userId": "68a74c127bdc06bd171f463a",
+      "locationId": "507f1f77bcf86cd799439021",
+      "isDefault": true,
+      "nickname": "Home",
+      "createdAt": "2024-01-18T10:30:00.000Z",
+      "updatedAt": "2024-01-18T10:30:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439072",
+      "userId": "68a74c127bdc06bd171f463a",
+      "locationId": "507f1f77bcf86cd799439022",
+      "isDefault": false,
+      "nickname": "Work Trip",
+      "createdAt": "2024-01-18T11:00:00.000Z",
+      "updatedAt": "2024-01-18T11:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439073",
+      "userId": "68a74c127bdc06bd171f463a",
+      "locationId": "507f1f77bcf86cd799439023",
+      "isDefault": false,
+      "nickname": null,
+      "createdAt": "2024-01-18T12:00:00.000Z",
+      "updatedAt": "2024-01-18T12:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439074",
+      "userId": "68a74c127bdc06bd171f463a",
+      "locationId": "507f1f77bcf86cd799439026",
+      "isDefault": false,
+      "nickname": "Vacation",
+      "createdAt": "2024-01-18T13:00:00.000Z",
+      "updatedAt": "2024-01-18T13:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439075",
+      "userId": "68a9c7ea585fdd00aa2173ff",
+      "locationId": "507f1f77bcf86cd799439024",
+      "isDefault": true,
+      "nickname": "Home",
+      "createdAt": "2024-01-18T10:30:00.000Z",
+      "updatedAt": "2024-01-18T10:30:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439076",
+      "userId": "68a9c7ea585fdd00aa2173ff",
+      "locationId": "507f1f77bcf86cd799439025",
+      "isDefault": false,
+      "nickname": "Sister's Place",
+      "createdAt": "2024-01-18T11:00:00.000Z",
+      "updatedAt": "2024-01-18T11:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439077",
+      "userId": "68a9c7ea585fdd00aa2173ff",
+      "locationId": "507f1f77bcf86cd799439027",
+      "isDefault": false,
+      "nickname": "Business Trip",
+      "createdAt": "2024-01-18T12:00:00.000Z",
+      "updatedAt": "2024-01-18T12:00:00.000Z"
+    }
+  ],
+  "timestamps": [
+    {
+      "_id": "507f1f77bcf86cd799439081",
+      "time": "2024-01-20T14:00:00.000Z",
+      "createdAt": "2024-01-20T14:00:00.000Z",
+      "updatedAt": "2024-01-20T14:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439082",
+      "time": "2024-01-20T13:00:00.000Z",
+      "createdAt": "2024-01-20T13:00:00.000Z",
+      "updatedAt": "2024-01-20T13:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439083",
+      "time": "2024-01-20T12:00:00.000Z",
+      "createdAt": "2024-01-20T12:00:00.000Z",
+      "updatedAt": "2024-01-20T12:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439084",
+      "time": "2024-01-20T11:00:00.000Z",
+      "createdAt": "2024-01-20T11:00:00.000Z",
+      "updatedAt": "2024-01-20T11:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439085",
+      "time": "2024-01-20T10:00:00.000Z",
+      "createdAt": "2024-01-20T10:00:00.000Z",
+      "updatedAt": "2024-01-20T10:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439086",
+      "time": "2024-01-20T15:00:00.000Z",
+      "createdAt": "2024-01-20T15:00:00.000Z",
+      "updatedAt": "2024-01-20T15:00:00.000Z"
     }
   ],
   "weatherdatas": [
@@ -89,13 +202,12 @@
       "windSpeed": 15,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439021",
+      "timestampId": "507f1f77bcf86cd799439081",
       "icon": "partly-cloudy",
       "feelsLike": 24,
       "pressure": 1013,
       "visibility": 10,
-      "uvIndex": 5,
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "uvIndex": 5
     },
     {
       "_id": "507f1f77bcf86cd799439032",
@@ -106,13 +218,12 @@
       "windSpeed": 20,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439021",
+      "timestampId": "507f1f77bcf86cd799439082",
       "icon": "rain",
       "feelsLike": 18,
       "pressure": 1008,
       "visibility": 8,
-      "uvIndex": 2,
-      "createdAt": "2024-01-20T13:00:00.000Z",
-      "updatedAt": "2024-01-20T13:00:00.000Z"
+      "uvIndex": 2
     },
     {
       "_id": "507f1f77bcf86cd799439033",
@@ -123,13 +234,12 @@
       "windSpeed": 12,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439022",
+      "timestampId": "507f1f77bcf86cd799439081",
       "icon": "cloudy",
       "feelsLike": 10,
       "pressure": 1015,
       "visibility": 9,
-      "uvIndex": 3,
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "uvIndex": 3
     },
     {
       "_id": "507f1f77bcf86cd799439034",
@@ -140,13 +250,12 @@
       "windSpeed": 55,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439022",
+      "timestampId": "507f1f77bcf86cd799439082",
       "icon": "heavy-rain",
       "feelsLike": 6,
       "pressure": 1005,
       "visibility": 5,
-      "uvIndex": 1,
-      "createdAt": "2024-01-20T13:00:00.000Z",
-      "updatedAt": "2024-01-20T13:00:00.000Z"
+      "uvIndex": 1
     },
     {
       "_id": "507f1f77bcf86cd799439035",
@@ -157,13 +266,12 @@
       "windSpeed": 8,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439023",
+      "timestampId": "507f1f77bcf86cd799439081",
       "icon": "sunny",
       "feelsLike": 30,
       "pressure": 1018,
       "visibility": 15,
-      "uvIndex": 8,
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "uvIndex": 8
     },
     {
       "_id": "507f1f77bcf86cd799439036",
@@ -174,13 +282,12 @@
       "windSpeed": 5,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439023",
+      "timestampId": "507f1f77bcf86cd799439083",
       "icon": "extreme-heat",
       "feelsLike": 42,
       "pressure": 1020,
       "visibility": 12,
-      "uvIndex": 10,
-      "createdAt": "2024-01-20T12:00:00.000Z",
-      "updatedAt": "2024-01-20T12:00:00.000Z"
+      "uvIndex": 10
     },
     {
       "_id": "507f1f77bcf86cd799439037",
@@ -191,13 +298,12 @@
       "windSpeed": 18,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439024",
+      "timestampId": "507f1f77bcf86cd799439081",
       "icon": "partly-cloudy",
       "feelsLike": 16,
       "pressure": 1012,
       "visibility": 11,
-      "uvIndex": 4,
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "uvIndex": 4
     },
     {
       "_id": "507f1f77bcf86cd799439038",
@@ -208,13 +314,12 @@
       "windSpeed": 22,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439025",
+      "timestampId": "507f1f77bcf86cd799439081",
       "icon": "sunny",
       "feelsLike": 27,
       "pressure": 1016,
       "visibility": 20,
-      "uvIndex": 9,
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "uvIndex": 9
     },
     {
       "_id": "507f1f77bcf86cd799439039",
@@ -225,13 +330,12 @@
       "windSpeed": 65,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439022",
+      "timestampId": "507f1f77bcf86cd799439084",
       "icon": "snow",
       "feelsLike": -18,
       "pressure": 998,
       "visibility": 2,
-      "uvIndex": 1,
-      "createdAt": "2024-01-20T11:00:00.000Z",
-      "updatedAt": "2024-01-20T11:00:00.000Z"
+      "uvIndex": 1
     },
     {
       "_id": "507f1f77bcf86cd799439040",
@@ -242,85 +346,44 @@
       "windSpeed": 35,
       "windSpeedType": "kmh",
       "locationId": "507f1f77bcf86cd799439026",
+      "timestampId": "507f1f77bcf86cd799439081",
       "icon": "extreme-heat",
       "feelsLike": 48,
       "pressure": 1008,
       "visibility": 8,
-      "uvIndex": 11,
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
-    }
-  ],
-  "timestamps": [
+      "uvIndex": 11
+    },
     {
       "_id": "507f1f77bcf86cd799439041",
-      "time": "2024-01-20T14:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439031",
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "temperature": 32,
+      "temperatureType": "celsius",
+      "description": "Hot and Humid",
+      "humidity": 85,
+      "windSpeed": 12,
+      "windSpeedType": "kmh",
+      "locationId": "507f1f77bcf86cd799439027",
+      "timestampId": "507f1f77bcf86cd799439081",
+      "icon": "humid",
+      "feelsLike": 38,
+      "pressure": 1010,
+      "visibility": 12,
+      "uvIndex": 9
     },
     {
       "_id": "507f1f77bcf86cd799439042",
-      "time": "2024-01-20T13:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439032",
-      "createdAt": "2024-01-20T13:00:00.000Z",
-      "updatedAt": "2024-01-20T13:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439043",
-      "time": "2024-01-20T14:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439033",
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439044",
-      "time": "2024-01-20T13:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439034",
-      "createdAt": "2024-01-20T13:00:00.000Z",
-      "updatedAt": "2024-01-20T13:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439045",
-      "time": "2024-01-20T14:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439035",
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439046",
-      "time": "2024-01-20T12:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439036",
-      "createdAt": "2024-01-20T12:00:00.000Z",
-      "updatedAt": "2024-01-20T12:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439047",
-      "time": "2024-01-20T14:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439037",
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439048",
-      "time": "2024-01-20T14:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439038",
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439049",
-      "time": "2024-01-20T11:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439039",
-      "createdAt": "2024-01-20T11:00:00.000Z",
-      "updatedAt": "2024-01-20T11:00:00.000Z"
-    },
-    {
-      "_id": "507f1f77bcf86cd799439050",
-      "time": "2024-01-20T14:00:00.000Z",
-      "weatherDataId": "507f1f77bcf86cd799439040",
-      "createdAt": "2024-01-20T14:00:00.000Z",
-      "updatedAt": "2024-01-20T14:00:00.000Z"
+      "temperature": 18,
+      "temperatureType": "celsius",
+      "description": "Light Showers",
+      "humidity": 75,
+      "windSpeed": 25,
+      "windSpeedType": "kmh",
+      "locationId": "507f1f77bcf86cd799439028",
+      "timestampId": "507f1f77bcf86cd799439081",
+      "icon": "light-rain",
+      "feelsLike": 16,
+      "pressure": 1009,
+      "visibility": 8,
+      "uvIndex": 3
     }
   ],
   "weatheralerts": [
@@ -443,6 +506,21 @@
       "isRead": true,
       "createdAt": "2024-01-20T14:05:00.000Z",
       "updatedAt": "2024-01-20T16:00:00.000Z"
+    },
+    {
+      "_id": "507f1f77bcf86cd799439059",
+      "severity": "high",
+      "message": "Extreme heat warning: 32°C with high humidity",
+      "alertCondition": "extreme_heat",
+      "weatherDataId": "507f1f77bcf86cd799439041",
+      "locationId": "507f1f77bcf86cd799439027",
+      "userId": "68a9c7ea585fdd00aa2173ff",
+      "isActive": true,
+      "startTime": "2024-01-20T14:00:00.000Z",
+      "endTime": null,
+      "isRead": false,
+      "createdAt": "2024-01-20T14:05:00.000Z",
+      "updatedAt": "2024-01-20T14:05:00.000Z"
     }
   ]
 }
