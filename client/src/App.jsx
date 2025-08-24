@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 
@@ -143,57 +144,59 @@ function AppRouter() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <div className="App">
-          <AppRouter />
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <div className="App">
+            <AppRouter />
 
-          {/* Toast notifications */}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 6000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-                fontSize: '14px',
-                padding: '16px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              },
-              success: {
-                duration: 5000,
+            {/* Toast notifications */}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 6000,
                 style: {
-                  background: '#10b981',
+                  background: '#363636',
                   color: '#fff',
+                  fontSize: '14px',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                 },
-                iconTheme: {
-                  primary: '#fff',
-                  secondary: '#10b981',
+                success: {
+                  duration: 5000,
+                  style: {
+                    background: '#10b981',
+                    color: '#fff',
+                  },
+                  iconTheme: {
+                    primary: '#fff',
+                    secondary: '#10b981',
+                  },
                 },
-              },
-              error: {
-                duration: 7000,
-                style: {
-                  background: '#ef4444',
-                  color: '#fff',
+                error: {
+                  duration: 7000,
+                  style: {
+                    background: '#ef4444',
+                    color: '#fff',
+                  },
+                  iconTheme: {
+                    primary: '#fff',
+                    secondary: '#ef4444',
+                  },
                 },
-                iconTheme: {
-                  primary: '#fff',
-                  secondary: '#ef4444',
+                loading: {
+                  style: {
+                    background: '#3b82f6',
+                    color: '#fff',
+                  },
                 },
-              },
-              loading: {
-                style: {
-                  background: '#3b82f6',
-                  color: '#fff',
-                },
-              },
-            }}
-          />
-        </div>
-      </Router>
-    </AuthProvider>
+              }}
+            />
+          </div>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { weatherAPI } from '../services/api';
+import { useTheme } from '../contexts/ThemeContext';
 import {
     MapPin,
     Plus,
@@ -25,6 +26,9 @@ const LocationManager = () => {
     const [loadingAvailable, setLoadingAvailable] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState(null);
     const [nickname, setNickname] = useState('');
+
+    const { theme, getThemeStyles } = useTheme();
+    const themeStyles = getThemeStyles();
 
     const navigate = useNavigate();
 
@@ -149,41 +153,42 @@ const LocationManager = () => {
     // Updated styles matching Dashboard theme
     const containerStyle = {
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        padding: '2rem 1rem',
-        position: 'relative'
+        background: themeStyles.background,
+        padding: 'clamp(1rem, 3vw, 2rem)',
+        position: 'relative',
+        transition: 'all 0.3s ease'
     };
 
     const cardStyle = {
-        background: 'rgba(255, 255, 255, 0.25)',
-        backdropFilter: 'blur(15px)',
-        WebkitBackdropFilter: 'blur(15px)',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
-        boxShadow: '0 8px 40px rgba(0, 0, 0, 0.2)',
-        borderRadius: '1rem',
-        padding: '2rem',
+        background: themeStyles.cardBackground,
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: `1px solid ${themeStyles.border}`,
+        boxShadow: `0 8px 40px ${themeStyles.shadow}`,
+        borderRadius: '1.5rem',
+        padding: 'clamp(1.5rem, 4vw, 2rem)',
         marginBottom: '1.5rem',
-        color: '#fff'
+        color: themeStyles.textPrimary
     };
 
     const locationCardStyle = {
-        background: 'rgba(255, 255, 255, 0.2)',
-        backdropFilter: 'blur(15px)',
-        WebkitBackdropFilter: 'blur(15px)',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
-        boxShadow: '0 8px 40px rgba(0, 0, 0, 0.15)',
+        background: themeStyles.cardBackground,
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: `1px solid ${themeStyles.border}`,
+        boxShadow: `0 8px 40px ${themeStyles.shadow}`,
         borderRadius: '1rem',
-        padding: '1.5rem',
+        padding: 'clamp(1rem, 3vw, 1.5rem)',
         transition: 'all 0.3s ease',
-        color: '#fff'
+        color: themeStyles.textPrimary
     };
 
     const titleStyle = {
-        fontSize: '3rem',
+        fontSize: 'clamp(2rem, 5vw, 3rem)',
         fontWeight: 'bold',
         margin: '0 0 0.5rem 0',
-        color: '#fff',
-        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+        color: themeStyles.textPrimary,
+        textShadow: `2px 2px 4px ${themeStyles.shadow}`
     };
 
     const buttonStyle = {
@@ -308,7 +313,7 @@ const LocationManager = () => {
                         animation: 'float 8s ease-in-out infinite reverse'
                     }} />
                 </div>
-                
+
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', maxWidth: '96rem', margin: '0 auto', position: 'relative', zIndex: 1 }}>
                     <div style={cardStyle}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -377,8 +382,14 @@ const LocationManager = () => {
             <div style={{ maxWidth: '96rem', margin: '0 auto', position: 'relative', zIndex: 1 }}>
                 {/* Header */}
                 <div style={cardStyle}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className="mobile-stack" style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '1rem'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }} className="mobile-full-width mobile-center">
                             <button
                                 onClick={() => navigate('/weather')}
                                 style={{
@@ -407,7 +418,7 @@ const LocationManager = () => {
                                 <p style={{ color: 'rgba(255, 255, 255, 0.95)', margin: 0 }}>Select from available weather locations to track</p>
                             </div>
                         </div>
-                        <button
+                        <button className="mobile-full-width"
                             onClick={() => setShowAddModal(true)}
                             style={primaryButtonStyle}
                             onMouseEnter={(e) => {
@@ -452,10 +463,10 @@ const LocationManager = () => {
                         </button>
                     </div>
                 ) : (
-                    <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
-                        gap: '1.5rem' 
+                    <div className="container-responsive" style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: 'clamp(1rem, 3vw, 1.5rem)'
                     }}>
                         {locations.map((userLocation) => (
                             <div
@@ -562,10 +573,10 @@ const LocationManager = () => {
                                 </div>
 
                                 {/* Coordinates */}
-                                <div style={{ 
-                                    padding: '0.75rem', 
-                                    marginBottom: '1rem', 
-                                    borderRadius: '0.5rem', 
+                                <div style={{
+                                    padding: '0.75rem',
+                                    marginBottom: '1rem',
+                                    borderRadius: '0.5rem',
                                     background: 'rgba(255, 255, 255, 0.15)',
                                     border: '1px solid rgba(255, 255, 255, 0.3)',
                                     backdropFilter: 'blur(10px)'
@@ -599,16 +610,16 @@ const LocationManager = () => {
 
                                 {/* Quick Weather Info */}
                                 {userLocation.currentWeather && (
-                                    <div style={{ 
-                                        paddingTop: '1rem', 
-                                        marginTop: '1rem', 
-                                        borderTop: '1px solid rgba(255, 255, 255, 0.2)' 
+                                    <div style={{
+                                        paddingTop: '1rem',
+                                        marginTop: '1rem',
+                                        borderTop: '1px solid rgba(255, 255, 255, 0.2)'
                                     }}>
-                                        <div style={{ 
-                                            display: 'flex', 
-                                            alignItems: 'center', 
-                                            justifyContent: 'space-between', 
-                                            fontSize: '0.875rem' 
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            fontSize: '0.875rem'
                                         }}>
                                             <span style={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
                                                 {userLocation.currentWeather.description}
@@ -665,12 +676,12 @@ const LocationManager = () => {
                                         </label>
 
                                         {loadingAvailable ? (
-                                            <div style={{ 
-                                                display: 'flex', 
-                                                alignItems: 'center', 
-                                                justifyContent: 'center', 
-                                                padding: '2rem', 
-                                                border: '1px solid rgba(255, 255, 255, 0.3)', 
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                padding: '2rem',
+                                                border: '1px solid rgba(255, 255, 255, 0.3)',
                                                 borderRadius: '0.5rem',
                                                 background: 'rgba(255, 255, 255, 0.1)',
                                                 backdropFilter: 'blur(10px)'
@@ -681,10 +692,10 @@ const LocationManager = () => {
                                                 </div>
                                             </div>
                                         ) : availableLocations.length === 0 ? (
-                                            <div style={{ 
-                                                padding: '2rem', 
-                                                textAlign: 'center', 
-                                                border: '1px solid rgba(255, 255, 255, 0.3)', 
+                                            <div style={{
+                                                padding: '2rem',
+                                                textAlign: 'center',
+                                                border: '1px solid rgba(255, 255, 255, 0.3)',
                                                 borderRadius: '0.5rem',
                                                 background: 'rgba(255, 255, 255, 0.1)',
                                                 backdropFilter: 'blur(10px)'
@@ -694,11 +705,11 @@ const LocationManager = () => {
                                                 <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.6)', margin: 0 }}>You've already added all available locations</p>
                                             </div>
                                         ) : (
-                                            <div style={{ 
-                                                maxHeight: '16rem', 
-                                                overflowY: 'auto', 
-                                                background: 'rgba(255, 255, 255, 0.1)', 
-                                                border: '1px solid rgba(255, 255, 255, 0.3)', 
+                                            <div style={{
+                                                maxHeight: '16rem',
+                                                overflowY: 'auto',
+                                                background: 'rgba(255, 255, 255, 0.1)',
+                                                border: '1px solid rgba(255, 255, 255, 0.3)',
                                                 borderRadius: '0.5rem',
                                                 backdropFilter: 'blur(10px)'
                                             }}>
@@ -726,13 +737,13 @@ const LocationManager = () => {
                                                         }}
                                                     >
                                                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                            <MapPin size={16} style={{ 
-                                                                marginRight: '0.75rem', 
+                                                            <MapPin size={16} style={{
+                                                                marginRight: '0.75rem',
                                                                 flexShrink: 0,
                                                                 color: selectedLocation?._id === location._id ? 'rgba(59, 130, 246, 0.8)' : 'rgba(255, 255, 255, 0.5)'
                                                             }} />
                                                             <div style={{ flex: 1 }}>
-                                                                <div style={{ 
+                                                                <div style={{
                                                                     fontWeight: '500',
                                                                     color: selectedLocation?._id === location._id ? '#fff' : 'rgba(255, 255, 255, 0.9)'
                                                                 }}>
@@ -781,10 +792,10 @@ const LocationManager = () => {
                                         </div>
                                     )}
 
-                                    <div style={{ 
-                                        padding: '0.75rem', 
-                                        borderLeft: '4px solid rgba(59, 130, 246, 0.8)', 
-                                        borderRadius: '0.25rem', 
+                                    <div style={{
+                                        padding: '0.75rem',
+                                        borderLeft: '4px solid rgba(59, 130, 246, 0.8)',
+                                        borderRadius: '0.25rem',
                                         background: 'rgba(59, 130, 246, 0.1)',
                                         backdropFilter: 'blur(10px)'
                                     }}>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import {
   User,
   Mail,
@@ -19,7 +20,9 @@ import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
+  const { theme, getThemeStyles } = useTheme();
   const navigate = useNavigate();
+  const themeStyles = getThemeStyles();
 
   const handleLogout = () => {
     const confirmLogout = window.confirm('Are you sure you want to logout?');
@@ -62,9 +65,10 @@ const Dashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '2rem 1rem',
-      position: 'relative'
+      background: themeStyles.background,
+      padding: '1rem',
+      position: 'relative',
+      transition: 'all 0.3s ease'
     }}>
       {/* Animated Background */}
       <div style={{
@@ -82,7 +86,7 @@ const Dashboard = () => {
           left: '10%',
           width: '300px',
           height: '300px',
-          background: 'rgba(255, 255, 255, 0.1)',
+          background: theme === 'dark' ? 'rgba(59, 130, 246, 0.05)' : 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
           filter: 'blur(60px)',
           animation: 'float 6s ease-in-out infinite'
@@ -93,60 +97,74 @@ const Dashboard = () => {
           right: '15%',
           width: '200px',
           height: '200px',
-          background: 'rgba(255, 255, 255, 0.1)',
+          background: theme === 'dark' ? 'rgba(139, 92, 246, 0.05)' : 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
           filter: 'blur(40px)',
           animation: 'float 8s ease-in-out infinite reverse'
         }} />
       </div>
 
-      <div style={{ maxWidth: '75vw', margin: '0 auto', position: 'relative', left: '100px', zIndex: 1 }}>
-        {/* Header Section */}
+      {/* Responsive Container */}
+      <div className="container-responsive" style={{
+        maxWidth: '90rem',
+        margin: '0 auto',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        {/* Header Section - Now responsive */}
         <div style={{
-          background: 'rgba(255, 255, 255, 0.2)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-          borderRadius: '1rem',
+          background: themeStyles.cardBackground,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: `1px solid ${themeStyles.border}`,
+          boxShadow: `0 8px 40px ${themeStyles.shadow}`,
+          borderRadius: '1.5rem',
           padding: '2rem',
           marginBottom: '1.5rem',
           opacity: 0,
           transform: 'translateY(-70%)',
           animation: 'slide-down 1s ease forwards',
           animationDelay: '0.2s',
-          color: '#fff'
+          color: themeStyles.textPrimary
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <div>
+          <div className="mobile-stack" style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem'
+          }}>
+            <div className="mobile-center">
               <h1 style={{
-                fontSize: '3rem',
+                fontSize: 'clamp(2rem, 5vw, 3rem)', // Responsive font size
                 fontWeight: 'bold',
                 margin: '0 0 0.5rem 0',
-                color: '#fff'
+                color: themeStyles.textPrimary
               }}>
                 Welcome back, {user?.fullName}!
               </h1>
               <p style={{
-                fontSize: '1rem',
-                color: 'rgba(255, 255, 255, 0.8)',
+                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                color: themeStyles.textSecondary,
                 margin: 0
               }}>
                 Here's your account information and weather dashboard.
               </p>
             </div>
+
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{
                 width: '4rem',
                 height: '4rem',
-                background: 'rgba(255, 255, 255, 0.3)',
+                background: themeStyles.cardBackground,
                 borderRadius: '1rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+                boxShadow: `0 4px 30px ${themeStyles.shadow}`,
+                backdropFilter: 'blur(10px)'
               }}>
-                <span style={{ color: 'white', fontWeight: 'bold', fontSize: '1.5rem' }}>
+                <span style={{ color: themeStyles.textPrimary, fontWeight: 'bold', fontSize: '1.5rem' }}>
                   {user?.fullName?.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -168,6 +186,7 @@ const Dashboard = () => {
                   boxShadow: '0 4px 30px rgba(220, 38, 38, 0.3)',
                   backdropFilter: 'blur(10px)'
                 }}
+                className="mobile-full-width mobile-text-sm"
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'scale(1.02)';
                   e.target.style.background = 'rgba(185, 28, 28, 0.9)';
@@ -178,31 +197,45 @@ const Dashboard = () => {
                 }}
               >
                 <LogOut size={16} />
-                Logout
+                <span className="mobile-hidden">Logout</span>
               </button>
             </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem' }}>
-          {/* Main Content */}
-          <div style={{ width: '70%' }}>
-            {/* Stats Cards */}
+        {/* Responsive Layout Container */}
+        <div className="grid-responsive-sidebar" style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr', // Mobile first
+          gap: '1.5rem',
+          '@media (min-width: 1024px)': {
+            gridTemplateColumns: '2fr 1fr'
+          }
+        }}>
+          {/* Main Content - Now responsive */}
+          <div>
+            {/* Stats Cards - Now responsive grid */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.2)',
-              backdropFilter: 'blur(10px)',
-              WebkitBackdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-              borderRadius: '0.8rem',
-              padding: '20px',
-              marginBottom: '20px',
+              background: themeStyles.cardBackground,
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: `1px solid ${themeStyles.border}`,
+              boxShadow: `0 8px 40px ${themeStyles.shadow}`,
+              borderRadius: '1.5rem',
+              padding: '1.5rem',
+              marginBottom: '1.5rem',
               opacity: 0,
               transform: 'translateY(200px)',
               animation: 'slide-up 1s ease forwards',
-              color: '#fff'
+              color: themeStyles.textPrimary
             }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+              <div className="grid-responsive-1 tablet-grid-2" style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem',
+                marginBottom: '2rem'
+              }}>
+                {/* Your existing stats cards with responsive updates */}
                 {[
                   {
                     icon: <Cloud size={24} color="white" />,
@@ -223,27 +256,28 @@ const Dashboard = () => {
                     title: 'Account Status',
                     subtitle: user?.isVerified ? 'Verified' : 'Unverified',
                     color: 'rgba(139, 92, 246, 0.8)',
-                    action: () => {}
+                    action: () => { }
                   }
                 ].map((item, index) => (
                   <div
                     key={index}
                     style={{
-                      background: 'rgba(255, 255, 255, 0.1)',
+                      background: themeStyles.cardBackground,
                       borderRadius: '1rem',
                       padding: '1.5rem',
                       transition: 'all 0.3s ease',
                       cursor: 'pointer',
-                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                      border: `1px solid ${themeStyles.border}`,
+                      backdropFilter: 'blur(15px)'
                     }}
                     onClick={item.action}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-4px)';
-                      e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.2)';
+                      e.currentTarget.style.boxShadow = `0 20px 40px ${theme === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.2)'}`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
+                      e.currentTarget.style.boxShadow = `0 8px 40px ${themeStyles.shadow}`;
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -255,15 +289,26 @@ const Dashboard = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        marginRight: '1rem'
+                        marginRight: '1rem',
+                        boxShadow: `0 4px 20px ${item.color}40`
                       }}>
                         {item.icon}
                       </div>
                       <div>
-                        <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'rgba(255, 255, 255, 0.8)', margin: '0' }}>
+                        <p style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          color: themeStyles.textSecondary,
+                          margin: '0'
+                        }}>
                           {item.title}
                         </p>
-                        <p style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: '0.25rem 0 0 0', color: '#fff' }}>
+                        <p style={{
+                          fontSize: '1.25rem',
+                          fontWeight: 'bold',
+                          margin: '0.25rem 0 0 0',
+                          color: themeStyles.textPrimary
+                        }}>
                           {item.subtitle}
                         </p>
                       </div>
@@ -362,24 +407,23 @@ const Dashboard = () => {
 
           {/* Quick Actions Sidebar */}
           <div style={{
-            width: '30%',
-            background: 'rgba(255, 255, 255, 0.2)',
-            backdropFilter: 'blur(10px)',
-            WebkitBackdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-            borderRadius: '0.8rem',
-            padding: '20px',
-            color: '#fff',
+            background: themeStyles.cardBackground,
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: `1px solid ${themeStyles.border}`,
+            boxShadow: `0 8px 40px ${themeStyles.shadow}`,
+            borderRadius: '1.5rem',
+            padding: '1.5rem',
+            color: themeStyles.textPrimary,
             opacity: 0,
             transform: 'translateX(200px)',
             animation: 'slide-right 1s ease forwards',
             animationDelay: '0.4s'
-          }}>
+          }} className="mobile-p-4">
             <h3 style={{
-              fontSize: '1.5rem',
+              fontSize: 'clamp(1.25rem, 4vw, 1.5rem)',
               fontWeight: 'bold',
-              color: '#fff',
+              color: themeStyles.textPrimary,
               marginBottom: '1.5rem'
             }}>
               Quick Actions
@@ -494,14 +538,14 @@ const Dashboard = () => {
                 transition: '0.5s',
                 backdropFilter: 'blur(10px)'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'transparent';
-                e.target.style.border = '1px solid #fff';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(64, 154, 199, 0.8)';
-                e.target.style.border = 'none';
-              }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.border = '1px solid #fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(64, 154, 199, 0.8)';
+                  e.target.style.border = 'none';
+                }}
               >
                 <span>See More</span>
                 <span style={{ fontSize: '1.2rem' }}>→</span>
