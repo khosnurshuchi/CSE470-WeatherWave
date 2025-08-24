@@ -29,163 +29,466 @@ const Navbar = () => {
     return null; // Don't show navbar if not authenticated
   }
 
-  const navLinkClass = (path) => `
-    text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors
-    ${isActive(path) ? 'bg-blue-50 text-blue-600' : ''}
-  `;
+  // Updated styles to match dashboard theme
+  const navbarStyle = {
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+    position: 'relative',
+    zIndex: 10
+  };
 
-  const mobileNavLinkClass = (path) => `
-    block text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium
-    ${isActive(path) ? 'bg-blue-50 text-blue-600' : ''}
-  `;
+  const logoStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    textDecoration: 'none',
+    color: '#fff'
+  };
+
+  const logoIconStyle = {
+    width: '2rem',
+    height: '2rem',
+    background: 'rgba(59, 130, 246, 0.8)',
+    borderRadius: '0.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 4px 14px 0 rgba(59, 130, 246, 0.3)',
+    backdropFilter: 'blur(10px)'
+  };
+
+  const logoTextStyle = {
+    fontSize: '1.25rem',
+    fontWeight: 'bold',
+    color: '#fff'
+  };
+
+  const navLinkStyle = (path) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.25rem',
+    padding: '0.5rem 0.75rem',
+    borderRadius: '0.5rem',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+    color: isActive(path) ? '#fff' : 'rgba(255, 255, 255, 0.8)',
+    background: isActive(path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+    border: isActive(path) ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+    backdropFilter: isActive(path) ? 'blur(10px)' : 'none'
+  });
+
+  const mobileNavLinkStyle = (path) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.75rem',
+    borderRadius: '0.5rem',
+    fontSize: '1rem',
+    fontWeight: '500',
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+    color: isActive(path) ? '#fff' : 'rgba(255, 255, 255, 0.8)',
+    background: isActive(path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+    border: isActive(path) ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+    backdropFilter: isActive(path) ? 'blur(10px)' : 'none'
+  });
+
+  const userButtonStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.5rem 0.75rem',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.8)',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  };
+
+  const dropdownStyle = {
+    position: 'absolute',
+    right: '0',
+    top: '100%',
+    marginTop: '0.5rem',
+    width: '12rem',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+    borderRadius: '0.75rem',
+    padding: '0.5rem',
+    zIndex: 50,
+    opacity: 0,
+    visibility: 'hidden',
+    transform: 'translateY(-10px)',
+    transition: 'all 0.2s ease'
+  };
+
+  const dropdownVisibleStyle = {
+    ...dropdownStyle,
+    opacity: 1,
+    visibility: 'visible',
+    transform: 'translateY(0)'
+  };
+
+  const dropdownItemStyle = {
+    display: 'block',
+    width: '100%',
+    padding: '0.75rem',
+    fontSize: '0.875rem',
+    color: 'rgba(255, 255, 255, 0.8)',
+    background: 'transparent',
+    border: 'none',
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    textAlign: 'left',
+    textDecoration: 'none'
+  };
+
+  const menuButtonStyle = {
+    color: 'rgba(255, 255, 255, 0.8)',
+    background: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '0.5rem',
+    borderRadius: '0.5rem',
+    transition: 'all 0.2s ease'
+  };
+
+  const mobileMenuStyle = {
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderTop: '1px solid rgba(255, 255, 255, 0.3)',
+    padding: '1rem'
+  };
 
   return (
-    <nav className="bg-white border-b shadow-lg">
-      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/dashboard" className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-8 h-8 bg-blue-600 rounded-lg">
-                <Cloud className="text-white" size={18} />
-              </div>
-              <span className="text-xl font-bold text-gray-900">WeatherWave</span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <div className="items-center hidden space-x-4 md:flex">
-            <Link
-              to="/dashboard"
-              className={navLinkClass('/dashboard')}
-            >
-              <div className="flex items-center space-x-1">
-                <Home size={16} />
-                <span>Dashboard</span>
-              </div>
-            </Link>
-
-            <Link
-              to="/weather"
-              className={navLinkClass('/weather')}
-            >
-              <div className="flex items-center space-x-1">
-                <Cloud size={16} />
-                <span>Weather</span>
-              </div>
-            </Link>
-
-            <Link
-              to="/locations"
-              className={navLinkClass('/locations')}
-            >
-              <div className="flex items-center space-x-1">
-                <MapPin size={16} />
-                <span>Locations</span>
-              </div>
-            </Link>
-
-            {/* User Menu */}
-            <div className="relative group">
-              <button className="flex items-center px-3 py-2 space-x-2 text-sm font-medium text-gray-700 transition-colors rounded-md hover:text-blue-600">
-                <User size={18} />
-                <span>{user?.fullName}</span>
-              </button>
-
-              {/* Dropdown Menu */}
-              <div className="absolute right-0 z-50 invisible w-48 py-1 mt-2 transition-all duration-200 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 group-hover:visible">
-                <Link
-                  to="/profile"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Edit Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                >
-                  <div className="flex items-center space-x-2">
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </div>
-                </button>
-              </div>
+    <div style={{ 
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50
+    }}>
+      <nav style={navbarStyle}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '4rem' }}>
+            {/* Logo */}
+            <div>
+              <Link to="/dashboard" style={logoStyle}>
+                <div style={logoIconStyle}>
+                  <Cloud color="white" size={18} />
+                </div>
+                <span style={logoTextStyle}>WeatherWave</span>
+              </Link>
             </div>
-          </div>
 
-          {/* Mobile menu button */}
-          <div className="flex items-center md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 border-t sm:px-3">
+            {/* Desktop Navigation */}
+            <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="md:flex">
               <Link
                 to="/dashboard"
-                className={mobileNavLinkClass('/dashboard')}
-                onClick={() => setIsMenuOpen(false)}
+                style={navLinkStyle('/dashboard')}
+                onMouseEnter={(e) => {
+                  if (!isActive('/dashboard')) {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.color = '#fff';
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                    e.target.style.backdropFilter = 'blur(10px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive('/dashboard')) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                    e.target.style.border = '1px solid transparent';
+                    e.target.style.backdropFilter = 'none';
+                  }
+                }}
               >
-                <div className="flex items-center space-x-2">
-                  <Home size={18} />
-                  <span>Dashboard</span>
-                </div>
+                <Home size={16} />
+                <span>Dashboard</span>
               </Link>
 
               <Link
                 to="/weather"
-                className={mobileNavLinkClass('/weather')}
-                onClick={() => setIsMenuOpen(false)}
+                style={navLinkStyle('/weather')}
+                onMouseEnter={(e) => {
+                  if (!isActive('/weather')) {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.color = '#fff';
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                    e.target.style.backdropFilter = 'blur(10px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive('/weather')) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                    e.target.style.border = '1px solid transparent';
+                    e.target.style.backdropFilter = 'none';
+                  }
+                }}
               >
-                <div className="flex items-center space-x-2">
-                  <Cloud size={18} />
-                  <span>Weather</span>
-                </div>
+                <Cloud size={16} />
+                <span>Weather</span>
               </Link>
 
               <Link
                 to="/locations"
-                className={mobileNavLinkClass('/locations')}
-                onClick={() => setIsMenuOpen(false)}
+                style={navLinkStyle('/locations')}
+                onMouseEnter={(e) => {
+                  if (!isActive('/locations')) {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.color = '#fff';
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                    e.target.style.backdropFilter = 'blur(10px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive('/locations')) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                    e.target.style.border = '1px solid transparent';
+                    e.target.style.backdropFilter = 'none';
+                  }
+                }}
               >
-                <div className="flex items-center space-x-2">
-                  <MapPin size={18} />
-                  <span>Locations</span>
-                </div>
+                <MapPin size={16} />
+                <span>Locations</span>
               </Link>
 
-              <Link
-                to="/profile"
-                className={mobileNavLinkClass('/profile')}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <div className="flex items-center space-x-2">
-                  <User size={18} />
-                  <span>Edit Profile</span>
-                </div>
-              </Link>
+              {/* User Menu */}
+              <div style={{ position: 'relative' }} className="group">
+                <button 
+                  style={userButtonStyle}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.color = '#fff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'transparent';
+                    e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                  }}
+                >
+                  <div style={{
+                    width: '1.75rem',
+                    height: '1.75rem',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    <User size={14} />
+                  </div>
+                  <span>{user?.fullName}</span>
+                </button>
 
+                {/* Dropdown Menu */}
+                <div 
+                  style={dropdownStyle}
+                  className="group-hover:opacity-100 group-hover:visible group-hover:translate-y-0"
+                  onMouseEnter={(e) => {
+                    e.target.style.opacity = '1';
+                    e.target.style.visibility = 'visible';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  <Link
+                    to="/profile"
+                    style={dropdownItemStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                      e.target.style.color = '#fff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                    }}
+                  >
+                    Edit Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    style={dropdownItemStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                      e.target.style.color = '#fff';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <div style={{ display: 'flex', alignItems: 'center' }} className="md:hidden">
               <button
-                onClick={handleLogout}
-                className="block w-full px-3 py-2 text-base font-medium text-left text-gray-700 rounded-md hover:text-blue-600"
+                onClick={toggleMenu}
+                style={menuButtonStyle}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.color = '#fff';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                }}
               >
-                <div className="flex items-center space-x-2">
-                  <LogOut size={18} />
-                  <span>Logout</span>
-                </div>
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
-        )}
-      </div>
-    </nav>
+
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <div style={mobileMenuStyle} className="md:hidden">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <Link
+                  to="/dashboard"
+                  style={mobileNavLinkStyle('/dashboard')}
+                  onClick={() => setIsMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    if (!isActive('/dashboard')) {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                      e.target.style.color = '#fff';
+                      e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                      e.target.style.backdropFilter = 'blur(10px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/dashboard')) {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      e.target.style.border = '1px solid transparent';
+                      e.target.style.backdropFilter = 'none';
+                    }
+                  }}
+                >
+                  <Home size={18} />
+                  <span>Dashboard</span>
+                </Link>
+
+                <Link
+                  to="/weather"
+                  style={mobileNavLinkStyle('/weather')}
+                  onClick={() => setIsMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    if (!isActive('/weather')) {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                      e.target.style.color = '#fff';
+                      e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                      e.target.style.backdropFilter = 'blur(10px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/weather')) {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      e.target.style.border = '1px solid transparent';
+                      e.target.style.backdropFilter = 'none';
+                    }
+                  }}
+                >
+                  <Cloud size={18} />
+                  <span>Weather</span>
+                </Link>
+
+                <Link
+                  to="/locations"
+                  style={mobileNavLinkStyle('/locations')}
+                  onClick={() => setIsMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    if (!isActive('/locations')) {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                      e.target.style.color = '#fff';
+                      e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                      e.target.style.backdropFilter = 'blur(10px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/locations')) {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      e.target.style.border = '1px solid transparent';
+                      e.target.style.backdropFilter = 'none';
+                    }
+                  }}
+                >
+                  <MapPin size={18} />
+                  <span>Locations</span>
+                </Link>
+
+                <Link
+                  to="/profile"
+                  style={mobileNavLinkStyle('/profile')}
+                  onClick={() => setIsMenuOpen(false)}
+                  onMouseEnter={(e) => {
+                    if (!isActive('/profile')) {
+                      e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                      e.target.style.color = '#fff';
+                      e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                      e.target.style.backdropFilter = 'blur(10px)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive('/profile')) {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                      e.target.style.border = '1px solid transparent';
+                      e.target.style.backdropFilter = 'none';
+                    }
+                  }}
+                >
+                  <User size={18} />
+                  <span>Edit Profile</span>
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  style={mobileNavLinkStyle()}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.color = '#fff';
+                    e.target.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+                    e.target.style.backdropFilter = 'blur(10px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'transparent';
+                    e.target.style.color = 'rgba(255, 255, 255, 0.8)';
+                    e.target.style.border = '1px solid transparent';
+                    e.target.style.backdropFilter = 'none';
+                  }}
+                >
+                  <LogOut size={18} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+    </div>
   );
 };
 

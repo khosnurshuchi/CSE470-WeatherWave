@@ -146,29 +146,80 @@ const LocationManager = () => {
         setAvailableLocations([]);
     };
 
+    // Updated styles matching Dashboard theme
     const containerStyle = {
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
-        padding: '2rem 1rem'
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '2rem 1rem',
+        position: 'relative'
     };
 
     const cardStyle = {
-        background: 'rgba(255, 255, 255, 0.9)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '1.5rem',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        border: '1px solid rgba(16, 185, 129, 0.2)',
-        padding: '2rem'
+        background: 'rgba(255, 255, 255, 0.25)',
+        backdropFilter: 'blur(15px)',
+        WebkitBackdropFilter: 'blur(15px)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: '0 8px 40px rgba(0, 0, 0, 0.2)',
+        borderRadius: '1rem',
+        padding: '2rem',
+        marginBottom: '1.5rem',
+        color: '#fff'
     };
 
     const locationCardStyle = {
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
+        background: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: 'blur(15px)',
+        WebkitBackdropFilter: 'blur(15px)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: '0 8px 40px rgba(0, 0, 0, 0.15)',
         borderRadius: '1rem',
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
-        border: '1px solid rgba(16, 185, 129, 0.2)',
         padding: '1.5rem',
-        transition: 'all 0.3s ease'
+        transition: 'all 0.3s ease',
+        color: '#fff'
+    };
+
+    const titleStyle = {
+        fontSize: '3rem',
+        fontWeight: 'bold',
+        margin: '0 0 0.5rem 0',
+        color: '#fff',
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
+    };
+
+    const buttonStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        padding: '0.75rem 1.5rem',
+        fontSize: '0.875rem',
+        fontWeight: '600',
+        border: 'none',
+        borderRadius: '0.75rem',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        textDecoration: 'none',
+        color: 'white'
+    };
+
+    const primaryButtonStyle = {
+        ...buttonStyle,
+        background: 'rgba(59, 130, 246, 0.8)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 30px rgba(59, 130, 246, 0.3)'
+    };
+
+    const secondaryButtonStyle = {
+        ...buttonStyle,
+        background: 'rgba(107, 114, 128, 0.8)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 30px rgba(107, 114, 128, 0.3)'
+    };
+
+    const dangerButtonStyle = {
+        ...buttonStyle,
+        background: 'rgba(220, 38, 38, 0.8)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 30px rgba(220, 38, 38, 0.3)'
     };
 
     const modalStyle = {
@@ -186,52 +237,189 @@ const LocationManager = () => {
     };
 
     const modalContentStyle = {
-        background: 'white',
+        background: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
         borderRadius: '1rem',
         maxWidth: '500px',
         width: '100%',
         maxHeight: '90vh',
-        overflow: 'auto'
+        overflow: 'auto',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        color: '#fff'
+    };
+
+    const inputStyle = {
+        width: '100%',
+        padding: '0.75rem',
+        border: '2px solid rgba(255, 255, 255, 0.3)',
+        borderRadius: '0.5rem',
+        fontSize: '1rem',
+        transition: 'all 0.2s ease',
+        outline: 'none',
+        boxSizing: 'border-box',
+        background: 'rgba(255, 255, 255, 0.1)',
+        color: '#fff',
+        backdropFilter: 'blur(10px)'
+    };
+
+    const labelStyle = {
+        display: 'block',
+        fontSize: '0.875rem',
+        fontWeight: '600',
+        color: 'rgba(255, 255, 255, 0.9)',
+        marginBottom: '0.5rem'
     };
 
     if (loading) {
         return (
             <div style={containerStyle}>
-                <div className="flex items-center justify-center max-w-6xl mx-auto">
+                {/* Animated Background */}
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    pointerEvents: 'none',
+                    zIndex: 0
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '10%',
+                        left: '10%',
+                        width: '300px',
+                        height: '300px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: '50%',
+                        filter: 'blur(60px)',
+                        animation: 'float 6s ease-in-out infinite'
+                    }} />
+                    <div style={{
+                        position: 'absolute',
+                        top: '60%',
+                        right: '15%',
+                        width: '200px',
+                        height: '200px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: '50%',
+                        filter: 'blur(40px)',
+                        animation: 'float 8s ease-in-out infinite reverse'
+                    }} />
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', maxWidth: '96rem', margin: '0 auto', position: 'relative', zIndex: 1 }}>
                     <div style={cardStyle}>
-                        <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 border-4 border-green-200 rounded-full border-t-green-600 animate-spin"></div>
-                            <span className="text-gray-700">Loading locations...</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{
+                                width: '2rem',
+                                height: '2rem',
+                                border: '4px solid rgba(255, 255, 255, 0.3)',
+                                borderTop: '4px solid #fff',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite'
+                            }} />
+                            <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Loading locations...</span>
                         </div>
                     </div>
                 </div>
+                <style jsx>{`
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    @keyframes float {
+                        0%, 100% { transform: translateY(0px); }
+                        50% { transform: translateY(-20px); }
+                    }
+                `}</style>
             </div>
         );
     }
 
     return (
         <div style={containerStyle}>
-            <div className="max-w-6xl mx-auto">
+            {/* Animated Background */}
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                pointerEvents: 'none',
+                zIndex: 0
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    top: '10%',
+                    left: '10%',
+                    width: '300px',
+                    height: '300px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '50%',
+                    filter: 'blur(60px)',
+                    animation: 'float 6s ease-in-out infinite'
+                }} />
+                <div style={{
+                    position: 'absolute',
+                    top: '60%',
+                    right: '15%',
+                    width: '200px',
+                    height: '200px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '50%',
+                    filter: 'blur(40px)',
+                    animation: 'float 8s ease-in-out infinite reverse'
+                }} />
+            </div>
+
+            <div style={{ maxWidth: '96rem', margin: '0 auto', position: 'relative', zIndex: 1 }}>
                 {/* Header */}
-                <div style={cardStyle} className="mb-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex items-center">
+                <div style={cardStyle}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
                             <button
                                 onClick={() => navigate('/weather')}
-                                className="p-2 mr-4 transition-colors rounded-full hover:bg-gray-100"
+                                style={{
+                                    padding: '0.5rem',
+                                    marginRight: '1rem',
+                                    background: 'rgba(255, 255, 255, 0.2)',
+                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                    borderRadius: '50%',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s ease',
+                                    backdropFilter: 'blur(10px)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                    e.target.style.transform = 'scale(1.05)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                    e.target.style.transform = 'scale(1)';
+                                }}
                             >
-                                <ArrowLeft size={20} className="text-gray-600" />
+                                <ArrowLeft size={20} style={{ color: '#fff' }} />
                             </button>
                             <div>
-                                <h1 className="mb-2 text-3xl font-bold text-green-800">Manage Locations</h1>
-                                <p className="text-gray-600">Select from available weather locations to track</p>
+                                <h1 style={titleStyle}>Manage Locations</h1>
+                                <p style={{ color: 'rgba(255, 255, 255, 0.95)', margin: 0 }}>Select from available weather locations to track</p>
                             </div>
                         </div>
                         <button
                             onClick={() => setShowAddModal(true)}
-                            className="flex items-center px-6 py-3 font-medium text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700"
+                            style={primaryButtonStyle}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.02)';
+                                e.target.style.background = 'rgba(37, 99, 235, 0.9)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.background = 'rgba(59, 130, 246, 0.8)';
+                            }}
                         >
-                            <Plus size={20} className="mr-2" />
+                            <Plus size={20} />
                             Add Location
                         </button>
                     </div>
@@ -239,22 +427,36 @@ const LocationManager = () => {
 
                 {/* Locations Grid */}
                 {locations.length === 0 ? (
-                    <div style={cardStyle} className="text-center">
-                        <MapPin size={64} className="mx-auto mb-4 text-gray-400" />
-                        <h2 className="mb-2 text-2xl font-bold text-gray-800">No Locations Added</h2>
-                        <p className="mb-6 text-gray-600">
+                    <div style={{ ...cardStyle, textAlign: 'center' }}>
+                        <MapPin size={64} style={{ margin: '0 auto 1rem', color: 'rgba(255, 255, 255, 0.5)' }} />
+                        <h2 style={{ marginBottom: '0.5rem', fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>
+                            No Locations Added
+                        </h2>
+                        <p style={{ marginBottom: '1.5rem', color: 'rgba(255, 255, 255, 0.95)', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
                             Select your first location to start tracking weather data.
                         </p>
                         <button
                             onClick={() => setShowAddModal(true)}
-                            className="inline-flex items-center px-6 py-3 font-medium text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700"
+                            style={primaryButtonStyle}
+                            onMouseEnter={(e) => {
+                                e.target.style.transform = 'scale(1.02)';
+                                e.target.style.background = 'rgba(37, 99, 235, 0.9)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.transform = 'scale(1)';
+                                e.target.style.background = 'rgba(59, 130, 246, 0.8)';
+                            }}
                         >
-                            <Plus size={20} className="mr-2" />
+                            <Plus size={20} />
                             Select Location
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', 
+                        gap: '1.5rem' 
+                    }}>
                         {locations.map((userLocation) => (
                             <div
                                 key={userLocation.userLocationId}
@@ -265,86 +467,153 @@ const LocationManager = () => {
                                 }}
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.transform = 'translateY(0)';
-                                    e.currentTarget.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.15)';
+                                    e.currentTarget.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
                                 }}
                             >
                                 {/* Location Header */}
-                                <div className="flex items-start justify-between mb-4">
-                                    <div className="flex items-center flex-1">
-                                        <MapPin size={20} className="flex-shrink-0 mr-3 text-green-600" />
+                                <div style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                                        <MapPin size={20} style={{ flexShrink: 0, marginRight: '0.75rem', color: '#4ade80' }} />
                                         <div>
-                                            <h3 className="text-lg font-bold text-gray-800">
+                                            <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#fff', margin: 0, textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)' }}>
                                                 {userLocation.location.city}
                                             </h3>
-                                            <p className="text-gray-600">{userLocation.location.country}</p>
+                                            <p style={{ color: 'rgba(255, 255, 255, 0.9)', margin: '0.125rem 0 0 0', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>{userLocation.location.country}</p>
                                             {userLocation.nickname && (
-                                                <p className="text-sm font-medium text-green-600">"{userLocation.nickname}"</p>
+                                                <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#4ade80', margin: '0.125rem 0 0 0', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
+                                                    "{userLocation.nickname}"
+                                                </p>
                                             )}
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center space-x-2">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         {userLocation.isDefault ? (
-                                            <div className="flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full">
-                                                <Star size={12} className="mr-1 fill-current" />
+                                            <div style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                padding: '0.25rem 0.5rem',
+                                                fontSize: '0.75rem',
+                                                fontWeight: '500',
+                                                color: '#fff',
+                                                background: 'rgba(251, 191, 36, 0.8)',
+                                                borderRadius: '1rem',
+                                                backdropFilter: 'blur(10px)'
+                                            }}>
+                                                <Star size={12} style={{ marginRight: '0.25rem', color: '#fff', fill: '#fff' }} />
                                                 Default
                                             </div>
                                         ) : (
                                             <button
                                                 onClick={() => handleSetDefault(userLocation.userLocationId, userLocation.location.city)}
-                                                className="p-2 transition-colors rounded-full hover:bg-gray-100"
+                                                style={{
+                                                    padding: '0.5rem',
+                                                    background: 'rgba(255, 255, 255, 0.2)',
+                                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                                    borderRadius: '50%',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s ease',
+                                                    backdropFilter: 'blur(10px)'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                                    e.target.style.transform = 'scale(1.05)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                                    e.target.style.transform = 'scale(1)';
+                                                }}
                                                 title="Set as default"
                                             >
-                                                <Star size={16} className="text-gray-400" />
+                                                <Star size={16} style={{ color: 'rgba(255, 255, 255, 0.7)' }} />
                                             </button>
                                         )}
 
                                         <button
                                             onClick={() => handleRemoveLocation(userLocation.userLocationId, userLocation.location.city)}
                                             disabled={locations.length <= 1}
-                                            className="p-2 transition-colors rounded-full hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            style={{
+                                                padding: '0.5rem',
+                                                background: 'rgba(255, 255, 255, 0.2)',
+                                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                                borderRadius: '50%',
+                                                cursor: locations.length <= 1 ? 'not-allowed' : 'pointer',
+                                                opacity: locations.length <= 1 ? 0.5 : 1,
+                                                transition: 'all 0.2s ease',
+                                                backdropFilter: 'blur(10px)'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (locations.length > 1) {
+                                                    e.target.style.background = 'rgba(239, 68, 68, 0.8)';
+                                                    e.target.style.transform = 'scale(1.05)';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (locations.length > 1) {
+                                                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                                    e.target.style.transform = 'scale(1)';
+                                                }
+                                            }}
                                             title={locations.length <= 1 ? "Cannot remove - you need at least one location" : "Remove location"}
                                         >
-                                            <Trash2 size={16} className="text-red-500" />
+                                            <Trash2 size={16} style={{ color: '#ef4444' }} />
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Coordinates */}
-                                <div className="p-3 mb-4 rounded-lg bg-gray-50">
-                                    <div className="mb-1 text-xs text-gray-600">Coordinates</div>
-                                    <div className="font-mono text-sm text-gray-800">
+                                <div style={{ 
+                                    padding: '0.75rem', 
+                                    marginBottom: '1rem', 
+                                    borderRadius: '0.5rem', 
+                                    background: 'rgba(255, 255, 255, 0.15)',
+                                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                                    backdropFilter: 'blur(10px)'
+                                }}>
+                                    <div style={{ marginBottom: '0.25rem', fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.85)', fontWeight: '600' }}>Coordinates</div>
+                                    <div style={{ fontFamily: 'monospace', fontSize: '0.875rem', color: '#fff', fontWeight: '500', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
                                         {userLocation.location.coordinates.latitude.toFixed(4)}, {userLocation.location.coordinates.longitude.toFixed(4)}
                                     </div>
                                 </div>
 
                                 {/* Weather Status */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center">
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
                                         {userLocation.currentWeather ? (
                                             <>
-                                                <CheckCircle size={16} className="mr-2 text-green-500" />
-                                                <span className="text-sm text-green-600">Weather data available</span>
+                                                <CheckCircle size={16} style={{ marginRight: '0.5rem', color: '#10b981' }} />
+                                                <span style={{ fontSize: '0.875rem', color: '#10b981' }}>Weather data available</span>
                                             </>
                                         ) : (
                                             <>
-                                                <AlertCircle size={16} className="mr-2 text-yellow-500" />
-                                                <span className="text-sm text-yellow-600">No weather data</span>
+                                                <AlertCircle size={16} style={{ marginRight: '0.5rem', color: '#eab308' }} />
+                                                <span style={{ fontSize: '0.875rem', color: '#eab308' }}>No weather data</span>
                                             </>
                                         )}
                                     </div>
 
-                                    <div className="text-xs text-gray-500">
+                                    <div style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.85)', fontWeight: '500' }}>
                                         Added {new Date(userLocation.addedAt).toLocaleDateString()}
                                     </div>
                                 </div>
 
                                 {/* Quick Weather Info */}
                                 {userLocation.currentWeather && (
-                                    <div className="pt-4 mt-4 border-t border-gray-200">
-                                        <div className="flex items-center justify-between text-sm">
-                                            <span className="text-gray-600">{userLocation.currentWeather.description}</span>
-                                            <span className="font-medium text-gray-800">
+                                    <div style={{ 
+                                        paddingTop: '1rem', 
+                                        marginTop: '1rem', 
+                                        borderTop: '1px solid rgba(255, 255, 255, 0.2)' 
+                                    }}>
+                                        <div style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            justifyContent: 'space-between', 
+                                            fontSize: '0.875rem' 
+                                        }}>
+                                            <span style={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.3)' }}>
+                                                {userLocation.currentWeather.description}
+                                            </span>
+                                            <span style={{ fontWeight: '500', color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)' }}>
                                                 {userLocation.currentWeather.temperature}°{userLocation.currentWeather.temperatureType.charAt(0).toUpperCase()}
                                             </span>
                                         </div>
@@ -359,65 +628,123 @@ const LocationManager = () => {
                 {showAddModal && (
                     <div style={modalStyle} onClick={handleCloseModal}>
                         <div style={modalContentStyle} onClick={(e) => e.stopPropagation()}>
-                            <div className="p-6">
+                            <div style={{ padding: '1.5rem' }}>
                                 {/* Modal Header */}
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-2xl font-bold text-gray-800">Add New Location</h2>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                                    <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff', margin: 0 }}>Add New Location</h2>
                                     <button
                                         onClick={handleCloseModal}
-                                        className="p-2 transition-colors rounded-full hover:bg-gray-100"
+                                        style={{
+                                            padding: '0.5rem',
+                                            background: 'rgba(255, 255, 255, 0.2)',
+                                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                                            borderRadius: '50%',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            backdropFilter: 'blur(10px)'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                                            e.target.style.transform = 'scale(1.05)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                                            e.target.style.transform = 'scale(1)';
+                                        }}
                                     >
-                                        <X size={20} className="text-gray-500" />
+                                        <X size={20} style={{ color: '#fff' }} />
                                     </button>
                                 </div>
 
                                 {/* Search and Add Form */}
-                                <form onSubmit={handleAddLocation} className="space-y-4">
+                                <form onSubmit={handleAddLocation} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                     {/* Location Selection */}
                                     <div>
-                                        <label className="block mb-2 text-sm font-medium text-gray-700">
+                                        <label style={labelStyle}>
                                             Select Location *
                                         </label>
 
                                         {loadingAvailable ? (
-                                            <div className="flex items-center justify-center p-8 border border-gray-200 rounded-lg">
-                                                <div className="flex items-center space-x-3">
-                                                    <Loader size={20} className="text-green-500 animate-spin" />
-                                                    <span className="text-gray-600">Loading available locations...</span>
+                                            <div style={{ 
+                                                display: 'flex', 
+                                                alignItems: 'center', 
+                                                justifyContent: 'center', 
+                                                padding: '2rem', 
+                                                border: '1px solid rgba(255, 255, 255, 0.3)', 
+                                                borderRadius: '0.5rem',
+                                                background: 'rgba(255, 255, 255, 0.1)',
+                                                backdropFilter: 'blur(10px)'
+                                            }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                    <Loader size={20} style={{ color: '#fff', animation: 'spin 1s linear infinite' }} />
+                                                    <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>Loading available locations...</span>
                                                 </div>
                                             </div>
                                         ) : availableLocations.length === 0 ? (
-                                            <div className="p-8 text-center border border-gray-200 rounded-lg bg-gray-50">
-                                                <MapPin size={32} className="mx-auto mb-2 text-gray-400" />
-                                                <p className="text-gray-600">No more locations available</p>
-                                                <p className="text-sm text-gray-500">You've already added all available locations</p>
+                                            <div style={{ 
+                                                padding: '2rem', 
+                                                textAlign: 'center', 
+                                                border: '1px solid rgba(255, 255, 255, 0.3)', 
+                                                borderRadius: '0.5rem',
+                                                background: 'rgba(255, 255, 255, 0.1)',
+                                                backdropFilter: 'blur(10px)'
+                                            }}>
+                                                <MapPin size={32} style={{ margin: '0 auto 0.5rem', color: 'rgba(255, 255, 255, 0.5)' }} />
+                                                <p style={{ color: 'rgba(255, 255, 255, 0.8)', margin: '0 0 0.25rem 0' }}>No more locations available</p>
+                                                <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.6)', margin: 0 }}>You've already added all available locations</p>
                                             </div>
                                         ) : (
-                                            <div className="overflow-y-auto bg-white border border-gray-200 rounded-lg max-h-64">
+                                            <div style={{ 
+                                                maxHeight: '16rem', 
+                                                overflowY: 'auto', 
+                                                background: 'rgba(255, 255, 255, 0.1)', 
+                                                border: '1px solid rgba(255, 255, 255, 0.3)', 
+                                                borderRadius: '0.5rem',
+                                                backdropFilter: 'blur(10px)'
+                                            }}>
                                                 {availableLocations.map((location, index) => (
                                                     <div
                                                         key={location._id || index}
-                                                        className={`p-3 border-b border-gray-100 last:border-b-0 cursor-pointer transition-colors ${selectedLocation?._id === location._id
-                                                                ? 'bg-green-50 border-l-4 border-l-green-500'
-                                                                : 'hover:bg-gray-50'
-                                                            }`}
+                                                        style={{
+                                                            padding: '0.75rem',
+                                                            borderBottom: index < availableLocations.length - 1 ? '1px solid rgba(255, 255, 255, 0.2)' : 'none',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.2s ease',
+                                                            background: selectedLocation?._id === location._id ? 'rgba(59, 130, 246, 0.3)' : 'transparent',
+                                                            borderLeft: selectedLocation?._id === location._id ? '4px solid rgba(59, 130, 246, 0.8)' : '4px solid transparent'
+                                                        }}
                                                         onClick={() => handleLocationSelect(location)}
+                                                        onMouseEnter={(e) => {
+                                                            if (selectedLocation?._id !== location._id) {
+                                                                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                                                            }
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            if (selectedLocation?._id !== location._id) {
+                                                                e.target.style.background = 'transparent';
+                                                            }
+                                                        }}
                                                     >
-                                                        <div className="flex items-center">
-                                                            <MapPin size={16} className={`mr-3 flex-shrink-0 ${selectedLocation?._id === location._id ? 'text-green-600' : 'text-gray-400'
-                                                                }`} />
-                                                            <div className="flex-1">
-                                                                <div className={`font-medium ${selectedLocation?._id === location._id ? 'text-green-800' : 'text-gray-800'
-                                                                    }`}>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <MapPin size={16} style={{ 
+                                                                marginRight: '0.75rem', 
+                                                                flexShrink: 0,
+                                                                color: selectedLocation?._id === location._id ? 'rgba(59, 130, 246, 0.8)' : 'rgba(255, 255, 255, 0.5)'
+                                                            }} />
+                                                            <div style={{ flex: 1 }}>
+                                                                <div style={{ 
+                                                                    fontWeight: '500',
+                                                                    color: selectedLocation?._id === location._id ? '#fff' : 'rgba(255, 255, 255, 0.9)'
+                                                                }}>
                                                                     {location.city}
                                                                 </div>
-                                                                <div className="text-sm text-gray-600">{location.country}</div>
-                                                                <div className="font-mono text-xs text-gray-500">
+                                                                <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)' }}>{location.country}</div>
+                                                                <div style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)' }}>
                                                                     {location.coordinates.latitude.toFixed(4)}, {location.coordinates.longitude.toFixed(4)}
                                                                 </div>
                                                             </div>
                                                             {selectedLocation?._id === location._id && (
-                                                                <CheckCircle size={16} className="flex-shrink-0 text-green-600" />
+                                                                <CheckCircle size={16} style={{ flexShrink: 0, color: 'rgba(59, 130, 246, 0.8)' }} />
                                                             )}
                                                         </div>
                                                     </div>
@@ -429,49 +756,96 @@ const LocationManager = () => {
                                     {/* Nickname Input - Only show when location is selected */}
                                     {selectedLocation && (
                                         <div>
-                                            <label className="block mb-2 text-sm font-medium text-gray-700">
+                                            <label style={labelStyle}>
                                                 Nickname (Optional)
                                             </label>
                                             <input
                                                 type="text"
                                                 value={nickname}
                                                 onChange={(e) => setNickname(e.target.value)}
-                                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                                                style={inputStyle}
                                                 placeholder="e.g. Home, Work, Vacation"
                                                 maxLength={50}
+                                                onFocus={(e) => {
+                                                    e.target.style.borderColor = 'rgba(59, 130, 246, 0.8)';
+                                                    e.target.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.2)';
+                                                }}
+                                                onBlur={(e) => {
+                                                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                                                    e.target.style.boxShadow = 'none';
+                                                }}
                                             />
-                                            <p className="mt-1 text-xs text-gray-500">Give this location a custom name for easy identification</p>
+                                            <p style={{ marginTop: '0.25rem', fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', margin: '0.25rem 0 0 0' }}>
+                                                Give this location a custom name for easy identification
+                                            </p>
                                         </div>
                                     )}
 
-                                    <div className="p-3 border-l-4 border-blue-400 rounded bg-blue-50">
-                                        <div className="text-sm text-blue-800">
+                                    <div style={{ 
+                                        padding: '0.75rem', 
+                                        borderLeft: '4px solid rgba(59, 130, 246, 0.8)', 
+                                        borderRadius: '0.25rem', 
+                                        background: 'rgba(59, 130, 246, 0.1)',
+                                        backdropFilter: 'blur(10px)'
+                                    }}>
+                                        <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
                                             <strong>How it works:</strong> Select from our available global locations and
                                             optionally give it a nickname for easy identification.
                                         </div>
                                     </div>
 
-                                    <div className="flex justify-end pt-4 space-x-3">
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '1rem', gap: '0.75rem' }}>
                                         <button
                                             type="button"
                                             onClick={handleCloseModal}
-                                            className="px-4 py-2 text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300"
+                                            style={secondaryButtonStyle}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.transform = 'scale(1.02)';
+                                                e.target.style.background = 'rgba(75, 85, 99, 0.9)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.transform = 'scale(1)';
+                                                e.target.style.background = 'rgba(107, 114, 128, 0.8)';
+                                            }}
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
                                             disabled={addingLocation || !selectedLocation}
-                                            className="flex items-center px-6 py-2 text-white transition-colors bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            style={{
+                                                ...primaryButtonStyle,
+                                                opacity: (addingLocation || !selectedLocation) ? 0.5 : 1,
+                                                cursor: (addingLocation || !selectedLocation) ? 'not-allowed' : 'pointer'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (!addingLocation && selectedLocation) {
+                                                    e.target.style.transform = 'scale(1.02)';
+                                                    e.target.style.background = 'rgba(37, 99, 235, 0.9)';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (!addingLocation && selectedLocation) {
+                                                    e.target.style.transform = 'scale(1)';
+                                                    e.target.style.background = 'rgba(59, 130, 246, 0.8)';
+                                                }
+                                            }}
                                         >
                                             {addingLocation ? (
                                                 <>
-                                                    <div className="w-4 h-4 mr-2 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
+                                                    <div style={{
+                                                        width: '1rem',
+                                                        height: '1rem',
+                                                        border: '2px solid rgba(255, 255, 255, 0.3)',
+                                                        borderTop: '2px solid white',
+                                                        borderRadius: '50%',
+                                                        animation: 'spin 1s linear infinite'
+                                                    }} />
                                                     Adding...
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Plus size={16} className="mr-2" />
+                                                    <Plus size={16} />
                                                     Add Location
                                                 </>
                                             )}
@@ -483,6 +857,17 @@ const LocationManager = () => {
                     </div>
                 )}
             </div>
+
+            <style jsx>{`
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-20px); }
+                }
+            `}</style>
         </div>
     );
 };

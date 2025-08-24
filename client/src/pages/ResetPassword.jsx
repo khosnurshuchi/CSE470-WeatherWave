@@ -41,7 +41,6 @@ const ResetPassword = () => {
 
     try {
       await authAPI.resetPassword(token, formData.password);
-      //await authAPI.resetPassword({ token, newPassword: formData.password });
       setSuccess(true);
       toast.success('Password reset successfully!');
       
@@ -56,217 +55,416 @@ const ResetPassword = () => {
     }
   };
 
-  // Styles matching your theme
-  const containerStyle = {
-    minHeight: '100vh',
-    background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    padding: '3rem 1rem',
-    position: 'relative'
-  };
-
-  const cardStyle = {
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(20px)',
-    padding: '2.5rem',
-    borderRadius: '1.5rem',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    border: '1px solid rgba(16, 185, 129, 0.2)',
-    maxWidth: '28rem',
-    margin: '0 auto',
-    width: '100%'
-  };
-
-  const logoStyle = {
-    width: '4rem',
-    height: '4rem',
-    background: success 
-      ? 'linear-gradient(135deg, #10b981, #047857)'
-      : 'linear-gradient(135deg, #047857, #065f46)',
-    borderRadius: '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 1.5rem',
-    boxShadow: '0 10px 25px rgba(4, 120, 87, 0.3)'
-  };
-
-  const titleStyle = {
-    fontSize: '2.25rem',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    background: 'linear-gradient(135deg, #047857, #065f46)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    marginBottom: '1rem'
-  };
-
-  const inputContainerStyle = {
-    position: 'relative',
-    marginBottom: '1.5rem'
-  };
-
-  const inputStyle = {
-    width: '100%',
-    paddingLeft: '3rem',
-    paddingRight: '3rem',
-    paddingTop: '1rem',
-    paddingBottom: '1rem',
-    border: '2px solid #d1d5db',
-    borderRadius: '0.75rem',
-    transition: 'all 0.3s ease',
-    background: 'white',
-    fontSize: '1rem',
-    outline: 'none',
-    boxSizing: 'border-box'
-  };
-
-  const inputFocusStyle = {
-    ...inputStyle,
-    border: '2px solid #047857',
-    boxShadow: '0 0 0 4px rgba(4, 120, 87, 0.1)'
-  };
-
-  const iconStyle = {
-    position: 'absolute',
-    left: '1rem',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: '1.25rem',
-    height: '1.25rem',
-    color: '#047857'
-  };
-
-  const eyeIconStyle = {
-    position: 'absolute',
-    right: '1rem',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: '1.25rem',
-    height: '1.25rem',
-    color: '#6b7280',
-    cursor: 'pointer'
-  };
-
-  const buttonStyle = {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '1rem 1.5rem',
-    background: loading ? '#9ca3af' : 'linear-gradient(135deg, #047857, #065f46)',
-    color: 'white',
-    fontSize: '1rem',
-    fontWeight: '600',
-    border: 'none',
-    borderRadius: '0.75rem',
-    cursor: loading ? 'not-allowed' : 'pointer',
-    transition: 'all 0.2s ease',
-    boxShadow: '0 4px 14px 0 rgba(4, 120, 87, 0.5)',
-    marginTop: '1rem'
-  };
-
   if (success) {
     return (
-      <div style={containerStyle}>
-        <div style={cardStyle}>
-          <div style={logoStyle}>
-            <CheckCircle color="white" size={32} />
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '2rem 1rem',
+        position: 'relative'
+      }}>
+        {/* Animated Background Blobs */}
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '10%',
+            left: '10%',
+            width: '300px',
+            height: '300px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            filter: 'blur(60px)',
+            animation: 'float 6s ease-in-out infinite'
+          }} />
+          <div style={{
+            position: 'absolute',
+            top: '60%',
+            right: '15%',
+            width: '200px',
+            height: '200px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            filter: 'blur(40px)',
+            animation: 'float 8s ease-in-out infinite reverse'
+          }} />
+        </div>
+
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          padding: '3rem',
+          borderRadius: '2rem',
+          maxWidth: '28rem',
+          width: '100%',
+          textAlign: 'center',
+          position: 'relative',
+          zIndex: 1,
+          opacity: 0,
+          transform: 'translateY(-50px)',
+          animation: 'slideInSuccess 0.8s ease forwards'
+        }}>
+          <div style={{
+            width: '5rem',
+            height: '5rem',
+            background: 'linear-gradient(135deg, #10b981, #047857)',
+            borderRadius: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 2rem',
+            boxShadow: '0 15px 35px rgba(16, 185, 129, 0.4)',
+            animation: 'pulse 2s ease-in-out infinite'
+          }}>
+            <CheckCircle color="white" size={36} />
           </div>
           
-          <h2 style={titleStyle}>Password Reset Successfully!</h2>
+          <h2 style={{
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
+            color: 'white',
+            marginBottom: '1rem',
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
+          }}>
+            Password Reset Successfully!
+          </h2>
           
-          <p style={{ textAlign: 'center', fontSize: '0.875rem', color: '#6b7280', marginBottom: '2rem' }}>
-            Your password has been updated. Redirecting to login...
+          <p style={{
+            fontSize: '1rem',
+            color: 'rgba(255, 255, 255, 0.8)',
+            marginBottom: '2.5rem',
+            lineHeight: '1.6'
+          }}>
+            Your password has been updated successfully. You will be redirected to the login page shortly.
           </p>
           
           <div style={{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.875rem',
-            color: '#047857'
+            gap: '0.75rem',
+            fontSize: '1rem',
+            color: 'white',
+            fontWeight: '500'
           }}>
             <div style={{
-              width: '1rem',
-              height: '1rem',
-              border: '2px solid rgba(4, 120, 87, 0.3)',
-              borderTop: '2px solid #047857',
+              width: '1.5rem',
+              height: '1.5rem',
+              border: '3px solid rgba(255, 255, 255, 0.3)',
+              borderTop: '3px solid white',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
             }} />
-            Redirecting...
+            Redirecting to login...
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes slideInSuccess {
+            from {
+              opacity: 0;
+              transform: translateY(-50px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
-        <div style={logoStyle}>
-          <Shield color="white" size={32} />
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '2rem 1rem',
+      position: 'relative'
+    }}>
+      {/* Animated Background Blobs */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '10%',
+          left: '10%',
+          width: '300px',
+          height: '300px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '50%',
+          filter: 'blur(60px)',
+          animation: 'float 6s ease-in-out infinite'
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '60%',
+          right: '15%',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '50%',
+          filter: 'blur(40px)',
+          animation: 'float 8s ease-in-out infinite reverse'
+        }} />
+      </div>
+
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.2)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+        padding: '3rem',
+        borderRadius: '2rem',
+        maxWidth: '28rem',
+        width: '100%',
+        position: 'relative',
+        zIndex: 1,
+        opacity: 0,
+        transform: 'translateY(-50px)',
+        animation: 'slideIn 0.8s ease forwards'
+      }}>
+        <div style={{
+          width: '5rem',
+          height: '5rem',
+          background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+          borderRadius: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: '0 auto 2rem',
+          boxShadow: '0 15px 35px rgba(139, 92, 246, 0.4)'
+        }}>
+          <Shield color="white" size={36} />
         </div>
         
-        <h2 style={titleStyle}>Reset Password</h2>
+        <h2 style={{
+          fontSize: '2.5rem',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          color: 'white',
+          marginBottom: '1rem',
+          textShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
+        }}>
+          Reset Password
+        </h2>
         
-        <p style={{ textAlign: 'center', fontSize: '0.875rem', color: '#6b7280', marginBottom: '2rem' }}>
-          Enter your new password below
+        <p style={{
+          textAlign: 'center',
+          fontSize: '1rem',
+          color: 'rgba(255, 255, 255, 0.8)',
+          marginBottom: '2.5rem',
+          lineHeight: '1.6'
+        }}>
+          Enter your new password below to secure your account
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div style={inputContainerStyle}>
-            <Lock style={iconStyle} />
+          <div style={{
+            position: 'relative',
+            marginBottom: '1.5rem'
+          }}>
+            <Lock style={{
+              position: 'absolute',
+              left: '1.25rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '1.25rem',
+              height: '1.25rem',
+              color: 'rgba(255, 255, 255, 0.8)'
+            }} />
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
               required
               value={formData.password}
               onChange={handleChange}
-              style={inputStyle}
+              style={{
+                width: '100%',
+                paddingLeft: '3.5rem',
+                paddingRight: '3.5rem',
+                paddingTop: '1rem',
+                paddingBottom: '1rem',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '1rem',
+                transition: 'all 0.3s ease',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
+                fontSize: '1rem',
+                outline: 'none',
+                boxSizing: 'border-box',
+                color: 'white',
+                '::placeholder': {
+                  color: 'rgba(255, 255, 255, 0.6)'
+                }
+              }}
               placeholder="New password"
-              onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-              onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+              onFocus={(e) => {
+                e.target.style.border = '2px solid rgba(139, 92, 246, 0.8)';
+                e.target.style.boxShadow = '0 0 0 4px rgba(139, 92, 246, 0.2)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '2px solid rgba(255, 255, 255, 0.2)';
+                e.target.style.boxShadow = 'none';
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
             />
             {showPassword ? (
               <EyeOff 
-                style={eyeIconStyle} 
+                style={{
+                  position: 'absolute',
+                  right: '1.25rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '1.25rem',
+                  height: '1.25rem',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s ease'
+                }}
                 onClick={() => setShowPassword(false)}
+                onMouseEnter={(e) => e.target.style.color = 'white'}
+                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
               />
             ) : (
               <Eye 
-                style={eyeIconStyle} 
+                style={{
+                  position: 'absolute',
+                  right: '1.25rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '1.25rem',
+                  height: '1.25rem',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s ease'
+                }}
                 onClick={() => setShowPassword(true)}
+                onMouseEnter={(e) => e.target.style.color = 'white'}
+                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
               />
             )}
           </div>
 
-          <div style={inputContainerStyle}>
-            <Lock style={iconStyle} />
+          <div style={{
+            position: 'relative',
+            marginBottom: '2rem'
+          }}>
+            <Lock style={{
+              position: 'absolute',
+              left: '1.25rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '1.25rem',
+              height: '1.25rem',
+              color: 'rgba(255, 255, 255, 0.8)'
+            }} />
             <input
               type={showConfirmPassword ? 'text' : 'password'}
               name="confirmPassword"
               required
               value={formData.confirmPassword}
               onChange={handleChange}
-              style={inputStyle}
+              style={{
+                width: '100%',
+                paddingLeft: '3.5rem',
+                paddingRight: '3.5rem',
+                paddingTop: '1rem',
+                paddingBottom: '1rem',
+                border: '2px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '1rem',
+                transition: 'all 0.3s ease',
+                background: 'rgba(255, 255, 255, 0.1)',
+                backdropFilter: 'blur(10px)',
+                fontSize: '1rem',
+                outline: 'none',
+                boxSizing: 'border-box',
+                color: 'white'
+              }}
               placeholder="Confirm new password"
-              onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-              onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+              onFocus={(e) => {
+                e.target.style.border = '2px solid rgba(139, 92, 246, 0.8)';
+                e.target.style.boxShadow = '0 0 0 4px rgba(139, 92, 246, 0.2)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+              }}
+              onBlur={(e) => {
+                e.target.style.border = '2px solid rgba(255, 255, 255, 0.2)';
+                e.target.style.boxShadow = 'none';
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
             />
             {showConfirmPassword ? (
               <EyeOff 
-                style={eyeIconStyle} 
+                style={{
+                  position: 'absolute',
+                  right: '1.25rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '1.25rem',
+                  height: '1.25rem',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s ease'
+                }}
                 onClick={() => setShowConfirmPassword(false)}
+                onMouseEnter={(e) => e.target.style.color = 'white'}
+                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
               />
             ) : (
               <Eye 
-                style={eyeIconStyle} 
+                style={{
+                  position: 'absolute',
+                  right: '1.25rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  width: '1.25rem',
+                  height: '1.25rem',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  cursor: 'pointer',
+                  transition: 'color 0.2s ease'
+                }}
                 onClick={() => setShowConfirmPassword(true)}
+                onMouseEnter={(e) => e.target.style.color = 'white'}
+                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
               />
             )}
           </div>
@@ -274,7 +472,40 @@ const ResetPassword = () => {
           <button
             type="submit"
             disabled={loading}
-            style={buttonStyle}
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '0.75rem',
+              padding: '1rem 1.5rem',
+              background: loading 
+                ? 'rgba(156, 163, 175, 0.5)' 
+                : 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              color: 'white',
+              fontSize: '1rem',
+              fontWeight: '600',
+              border: 'none',
+              borderRadius: '1rem',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: loading 
+                ? 'none' 
+                : '0 15px 35px rgba(139, 92, 246, 0.4)',
+              backdropFilter: 'blur(10px)'
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 20px 40px rgba(139, 92, 246, 0.5)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 15px 35px rgba(139, 92, 246, 0.4)';
+              }
+            }}
           >
             {loading ? (
               <>
@@ -284,14 +515,13 @@ const ResetPassword = () => {
                   border: '2px solid rgba(255, 255, 255, 0.3)',
                   borderTop: '2px solid white',
                   borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                  marginRight: '0.75rem'
+                  animation: 'spin 1s linear infinite'
                 }} />
-                Resetting...
+                Resetting Password...
               </>
             ) : (
               <>
-                <Shield style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
+                <Shield style={{ width: '1.25rem', height: '1.25rem' }} />
                 Reset Password
               </>
             )}
@@ -300,9 +530,26 @@ const ResetPassword = () => {
       </div>
 
       <style jsx>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        input::placeholder {
+          color: rgba(255, 255, 255, 0.6) !important;
         }
       `}</style>
     </div>

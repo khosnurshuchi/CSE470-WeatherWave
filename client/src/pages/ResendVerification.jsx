@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { Mail, Send, Shield, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-
 import { useNavigate } from "react-router-dom";
 
 const ResendVerification = () => {
@@ -26,85 +25,84 @@ const ResendVerification = () => {
     }
   };
 
- 
-  
-//333333
-
   const navigate = useNavigate();
 
   const handleBackToLogin = () => {
     navigate("/login");
   };
 
-  // Inline styles matching Login/Register theme
+  // Main container style matching dashboard
   const containerStyle = {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    padding: '3rem 1rem',
+    padding: '2rem 1rem',
     position: 'relative'
   };
 
+  // Glassmorphism card style
   const cardStyle = {
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(20px)',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     padding: '2.5rem',
-    borderRadius: '1.5rem',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    border: '1px solid rgba(16, 185, 129, 0.2)',
+    borderRadius: '1rem',
     maxWidth: '28rem',
     margin: '0 auto',
-    width: '100%'
+    width: '100%',
+    color: '#fff'
   };
 
   const logoStyle = {
     width: '4rem',
     height: '4rem',
-    background: 'linear-gradient(135deg, #047857, #065f46)',
+    background: 'rgba(255, 255, 255, 0.3)',
     borderRadius: '1rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 1.5rem',
-    boxShadow: '0 10px 25px rgba(4, 120, 87, 0.3)'
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
   };
 
   const successLogoStyle = {
     width: '4rem',
     height: '4rem',
-    background: 'linear-gradient(135deg, #10b981, #047857)',
+    background: 'rgba(16, 185, 129, 0.8)',
     borderRadius: '1rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 1.5rem',
-    boxShadow: '0 10px 25px rgba(16, 185, 129, 0.3)'
+    boxShadow: '0 4px 30px rgba(16, 185, 129, 0.3)',
+    animation: 'pulse 2s infinite'
   };
 
   const titleStyle = {
     fontSize: '2.25rem',
     fontWeight: 'bold',
     textAlign: 'center',
-    background: 'linear-gradient(135deg, #047857, #065f46)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
+    color: '#fff',
     marginBottom: '1rem'
   };
 
   const subtitleStyle = {
     textAlign: 'center',
     fontSize: '0.875rem',
-    color: '#6b7280',
-    marginBottom: '2rem'
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginBottom: '2rem',
+    lineHeight: '1.5'
   };
 
   const labelStyle = {
     display: 'block',
     fontSize: '0.875rem',
     fontWeight: '600',
-    color: '#374151',
+    color: 'rgba(255, 255, 255, 0.9)',
     marginBottom: '0.5rem'
   };
 
@@ -119,19 +117,21 @@ const ResendVerification = () => {
     paddingRight: '1rem',
     paddingTop: '1rem',
     paddingBottom: '1rem',
-    border: '2px solid #d1d5db',
+    border: '2px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '0.75rem',
     transition: 'all 0.3s ease',
-    background: 'white',
+    background: 'rgba(255, 255, 255, 0.1)',
     fontSize: '1rem',
     outline: 'none',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    color: '#fff',
+    backdropFilter: 'blur(10px)'
   };
 
   const inputFocusStyle = {
     ...inputStyle,
-    border: '2px solid #047857',
-    boxShadow: '0 0 0 4px rgba(4, 120, 87, 0.1)'
+    border: '2px solid rgba(255, 255, 255, 0.5)',
+    boxShadow: '0 0 0 4px rgba(255, 255, 255, 0.1)'
   };
 
   const iconStyle = {
@@ -141,7 +141,7 @@ const ResendVerification = () => {
     transform: 'translateY(-50%)',
     width: '1.25rem',
     height: '1.25rem',
-    color: '#047857',
+    color: 'rgba(255, 255, 255, 0.8)',
     transition: 'color 0.2s ease'
   };
 
@@ -151,18 +151,19 @@ const ResendVerification = () => {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '1rem 1.5rem',
-    background: loading ? '#9ca3af' : 'linear-gradient(135deg, #047857, #065f46)',
-    color: 'white',
+    background: loading ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.2)',
+    color: '#fff',
     fontSize: '1rem',
     fontWeight: '600',
-    border: 'none',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '0.75rem',
     cursor: loading ? 'not-allowed' : 'pointer',
     transition: 'all 0.2s ease',
-    boxShadow: '0 4px 14px 0 rgba(4, 120, 87, 0.5)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     transform: 'scale(1)',
     boxSizing: 'border-box',
-    marginBottom: '1.5rem'
+    marginBottom: '1.5rem',
+    backdropFilter: 'blur(10px)'
   };
 
   const secondaryButtonStyle = {
@@ -171,20 +172,21 @@ const ResendVerification = () => {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '1rem 1.5rem',
-    background: 'rgba(4, 120, 87, 0.1)',
-    color: '#047857',
+    background: 'rgba(255, 255, 255, 0.1)',
+    color: 'rgba(255, 255, 255, 0.9)',
     fontSize: '1rem',
     fontWeight: '600',
-    border: '2px solid rgba(4, 120, 87, 0.2)',
+    border: '2px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '0.75rem',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     transform: 'scale(1)',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    backdropFilter: 'blur(10px)'
   };
 
   const linkStyle = {
-    color: '#047857',
+    color: 'rgba(255, 255, 255, 0.9)',
     textDecoration: 'none',
     fontWeight: '500',
     fontSize: '0.875rem',
@@ -195,37 +197,52 @@ const ResendVerification = () => {
     <div style={containerStyle}>
       {/* Animated Background Elements */}
       <div style={{
-        position: 'absolute',
-        inset: '0',
-        overflow: 'hidden',
-        pointerEvents: 'none'
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0
       }}>
         <div style={{
           position: 'absolute',
-          top: '-10rem',
-          right: '-10rem',
-          width: '20rem',
-          height: '20rem',
-          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2))',
+          top: '10%',
+          left: '10%',
+          width: '300px',
+          height: '300px',
+          background: 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
-          filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite'
+          filter: 'blur(60px)',
+          animation: 'float 6s ease-in-out infinite'
         }} />
         <div style={{
           position: 'absolute',
-          bottom: '-10rem',
-          left: '-10rem',
-          width: '20rem',
-          height: '20rem',
-          background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(16, 185, 129, 0.2))',
+          top: '60%',
+          right: '15%',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '50%',
+          filter: 'blur(40px)',
+          animation: 'float 8s ease-in-out infinite reverse'
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '24rem',
+          height: '24rem',
+          background: 'rgba(255, 255, 255, 0.05)',
           borderRadius: '50%',
           filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite',
+          animation: 'float 4s ease-in-out infinite',
           animationDelay: '2s'
         }} />
       </div>
 
-      <div style={cardStyle}>
+      <div style={{...cardStyle, zIndex: 1}}>
         {!sent ? (
           <>
             <div style={logoStyle}>
@@ -238,7 +255,7 @@ const ResendVerification = () => {
               Enter your email address and we'll send you a new verification link
             </p>
 
-            <form onSubmit={handleSubmit}>
+            <div>
               <div>
                 <label style={labelStyle}>Email address</label>
                 <div style={inputContainerStyle}>
@@ -257,11 +274,17 @@ const ResendVerification = () => {
               </div>
 
               <button
-                type="submit"
+                onClick={handleSubmit}
                 disabled={loading}
                 style={buttonStyle}
-                onMouseEnter={(e) => !loading && (e.target.style.transform = 'scale(1.02)')}
-                onMouseLeave={(e) => !loading && (e.target.style.transform = 'scale(1)')}
+                onMouseEnter={(e) => !loading && (
+                  e.target.style.transform = 'scale(1.02)',
+                  e.target.style.background = 'rgba(255, 255, 255, 0.3)'
+                )}
+                onMouseLeave={(e) => !loading && (
+                  e.target.style.transform = 'scale(1)',
+                  e.target.style.background = 'rgba(255, 255, 255, 0.2)'
+                )}
               >
                 {loading ? (
                   <>
@@ -283,7 +306,7 @@ const ResendVerification = () => {
                   </>
                 )}
               </button>
-            </form>
+            </div>
           </>
         ) : (
           <>
@@ -294,12 +317,12 @@ const ResendVerification = () => {
             <h2 style={titleStyle}>Email Sent!</h2>
             
             <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <p style={{ fontSize: '1rem', color: '#374151', marginBottom: '1rem', fontWeight: '600' }}>
+              <p style={{ fontSize: '1rem', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem', fontWeight: '600' }}>
                 Verification Email Sent Successfully!
               </p>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)', lineHeight: '1.5' }}>
                 We've sent a verification email to{' '}
-                <strong style={{ color: '#047857' }}>{email}</strong>.{' '}
+                <strong style={{ color: 'rgba(255, 255, 255, 0.9)' }}>{email}</strong>.{' '}
                 Please check your inbox and click the verification link.
               </p>
             </div>
@@ -312,11 +335,11 @@ const ResendVerification = () => {
               style={secondaryButtonStyle}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.02)';
-                e.target.style.background = 'rgba(4, 120, 87, 0.15)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.background = 'rgba(4, 120, 87, 0.1)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
               }}
             >
               <Mail style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
@@ -334,8 +357,8 @@ const ResendVerification = () => {
               border: 'none',
               cursor: 'pointer'
             }}
-            onMouseEnter={(e) => e.target.style.color = '#065f46'}
-            onMouseLeave={(e) => e.target.style.color = '#047857'}
+            onMouseEnter={(e) => e.target.style.color = '#fff'}
+            onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.9)'}
           >
             Back to Login
           </button>
@@ -345,18 +368,18 @@ const ResendVerification = () => {
         <div style={{ 
           marginTop: '1.5rem', 
           paddingTop: '1.5rem', 
-          borderTop: '1px solid rgba(4, 120, 87, 0.2)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.2)',
           textAlign: 'center'
         }}>
-          <p style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.75rem' }}>
-            🔒 Your email verification is secure and encrypted
+          <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.75rem' }}>
+            Your email verification is secure and encrypted
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#047857' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.8)' }}>
             <span style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{
                 width: '0.5rem',
                 height: '0.5rem',
-                backgroundColor: '#047857',
+                backgroundColor: '#10b981',
                 borderRadius: '50%',
                 marginRight: '0.25rem',
                 animation: 'pulse 2s infinite'
@@ -367,7 +390,7 @@ const ResendVerification = () => {
               <div style={{
                 width: '0.5rem',
                 height: '0.5rem',
-                backgroundColor: '#047857',
+                backgroundColor: '#10b981',
                 borderRadius: '50%',
                 marginRight: '0.25rem',
                 animation: 'pulse 2s infinite',
@@ -379,7 +402,7 @@ const ResendVerification = () => {
               <div style={{
                 width: '0.5rem',
                 height: '0.5rem',
-                backgroundColor: '#047857',
+                backgroundColor: '#10b981',
                 borderRadius: '50%',
                 marginRight: '0.25rem',
                 animation: 'pulse 2s infinite',
@@ -399,6 +422,10 @@ const ResendVerification = () => {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
       `}</style>
     </div>

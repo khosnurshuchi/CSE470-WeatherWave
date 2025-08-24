@@ -44,10 +44,10 @@ const VerifyEmail = () => {
     navigate("/resend-verification");
   };
 
-  // Inline styles matching Login/Register theme
+  // Updated styles to match dashboard theme
   const containerStyle = {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -56,86 +56,71 @@ const VerifyEmail = () => {
   };
 
   const cardStyle = {
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(20px)',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     padding: '2.5rem',
     borderRadius: '1.5rem',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    border: '1px solid rgba(16, 185, 129, 0.2)',
     maxWidth: '28rem',
     margin: '0 auto',
     width: '100%',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: '#fff'
   };
 
   const successLogoStyle = {
     width: '5rem',
     height: '5rem',
-    background: 'linear-gradient(135deg, #10b981, #047857)',
+    background: 'rgba(16, 185, 129, 0.8)',
     borderRadius: '1.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 1.5rem',
     boxShadow: '0 15px 35px rgba(16, 185, 129, 0.4)',
-    animation: 'pulse 2s infinite'
+    animation: 'pulse 2s infinite',
+    backdropFilter: 'blur(10px)'
   };
 
   const errorLogoStyle = {
     width: '5rem',
     height: '5rem',
-    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+    background: 'rgba(239, 68, 68, 0.8)',
     borderRadius: '1.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 1.5rem',
     boxShadow: '0 15px 35px rgba(239, 68, 68, 0.4)',
-    animation: 'pulse 2s infinite'
+    animation: 'pulse 2s infinite',
+    backdropFilter: 'blur(10px)'
   };
 
   const loadingLogoStyle = {
     width: '5rem',
     height: '5rem',
-    background: 'linear-gradient(135deg, #3b82f6, #1e40af)',
+    background: 'rgba(59, 130, 246, 0.8)',
     borderRadius: '1.5rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 1.5rem',
-    boxShadow: '0 15px 35px rgba(59, 130, 246, 0.4)'
+    boxShadow: '0 15px 35px rgba(59, 130, 246, 0.4)',
+    backdropFilter: 'blur(10px)'
   };
 
   const titleStyle = {
     fontSize: '2.25rem',
     fontWeight: 'bold',
-    marginBottom: '1rem'
-  };
-
-  const successTitleStyle = {
-    ...titleStyle,
-    background: 'linear-gradient(135deg, #10b981, #047857)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
-  };
-
-  const errorTitleStyle = {
-    ...titleStyle,
-    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
-  };
-
-  const loadingTitleStyle = {
-    ...titleStyle,
-    background: 'linear-gradient(135deg, #3b82f6, #1e40af)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
+    marginBottom: '1rem',
+    color: '#fff'
   };
 
   const messageStyle = {
     fontSize: '0.875rem',
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.8)',
     lineHeight: '1.5',
     marginBottom: '2rem'
   };
@@ -146,7 +131,7 @@ const VerifyEmail = () => {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '1rem 1.5rem',
-    background: 'linear-gradient(135deg, #047857, #065f46)',
+    background: 'rgba(16, 185, 129, 0.8)',
     color: 'white',
     fontSize: '1rem',
     fontWeight: '600',
@@ -154,11 +139,12 @@ const VerifyEmail = () => {
     borderRadius: '0.75rem',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
-    boxShadow: '0 4px 14px 0 rgba(4, 120, 87, 0.5)',
+    boxShadow: '0 4px 30px rgba(16, 185, 129, 0.3)',
     transform: 'scale(1)',
     boxSizing: 'border-box',
     marginBottom: '1rem',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    backdropFilter: 'blur(10px)'
   };
 
   const secondaryButtonStyle = {
@@ -167,61 +153,64 @@ const VerifyEmail = () => {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '1rem 1.5rem',
-    background: 'rgba(4, 120, 87, 0.1)',
-    color: '#047857',
+    background: 'rgba(255, 255, 255, 0.1)',
+    color: '#fff',
     fontSize: '1rem',
     fontWeight: '600',
-    border: '2px solid rgba(4, 120, 87, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '0.75rem',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     transform: 'scale(1)',
     boxSizing: 'border-box',
-    textDecoration: 'none'
+    textDecoration: 'none',
+    backdropFilter: 'blur(10px)'
   };
 
   const dangerButtonStyle = {
     ...buttonStyle,
-    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-    boxShadow: '0 4px 14px 0 rgba(239, 68, 68, 0.5)'
+    background: 'rgba(239, 68, 68, 0.8)',
+    boxShadow: '0 4px 30px rgba(239, 68, 68, 0.3)'
   };
 
   if (status === 'loading') {
     return (
       <div style={containerStyle}>
-        {/* Animated Background Elements */}
+        {/* Animated Background Elements - matching dashboard */}
         <div style={{
-          position: 'absolute',
-          inset: '0',
-          overflow: 'hidden',
-          pointerEvents: 'none'
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0
         }}>
           <div style={{
             position: 'absolute',
-            top: '-10rem',
-            right: '-10rem',
-            width: '20rem',
-            height: '20rem',
-            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(30, 64, 175, 0.2))',
+            top: '10%',
+            left: '10%',
+            width: '300px',
+            height: '300px',
+            background: 'rgba(255, 255, 255, 0.1)',
             borderRadius: '50%',
-            filter: 'blur(3rem)',
-            animation: 'pulse 4s infinite'
+            filter: 'blur(60px)',
+            animation: 'float 6s ease-in-out infinite'
           }} />
           <div style={{
             position: 'absolute',
-            bottom: '-10rem',
-            left: '-10rem',
-            width: '20rem',
-            height: '20rem',
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2))',
+            top: '60%',
+            right: '15%',
+            width: '200px',
+            height: '200px',
+            background: 'rgba(255, 255, 255, 0.1)',
             borderRadius: '50%',
-            filter: 'blur(3rem)',
-            animation: 'pulse 4s infinite',
-            animationDelay: '2s'
+            filter: 'blur(40px)',
+            animation: 'float 8s ease-in-out infinite reverse'
           }} />
         </div>
 
-        <div style={cardStyle}>
+        <div style={{...cardStyle, position: 'relative', zIndex: 1}}>
           <div style={loadingLogoStyle}>
             <div style={{
               width: '2rem',
@@ -233,7 +222,7 @@ const VerifyEmail = () => {
             }} />
           </div>
           
-          <h2 style={loadingTitleStyle}>Verifying Email</h2>
+          <h2 style={titleStyle}>Verifying Email</h2>
           
           <p style={messageStyle}>
             Please wait while we verify your email address...
@@ -245,7 +234,7 @@ const VerifyEmail = () => {
             alignItems: 'center',
             gap: '0.5rem',
             fontSize: '0.875rem',
-            color: '#6b7280'
+            color: 'rgba(255, 255, 255, 0.8)'
           }}>
             <Loader style={{ width: '1rem', height: '1rem', animation: 'spin 1s linear infinite' }} />
             Processing verification...
@@ -261,6 +250,10 @@ const VerifyEmail = () => {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
           }
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
         `}</style>
       </div>
     );
@@ -268,50 +261,48 @@ const VerifyEmail = () => {
 
   return (
     <div style={containerStyle}>
-      {/* Animated Background Elements */}
+      {/* Animated Background Elements - matching dashboard */}
       <div style={{
-        position: 'absolute',
-        inset: '0',
-        overflow: 'hidden',
-        pointerEvents: 'none'
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0
       }}>
         <div style={{
           position: 'absolute',
-          top: '-10rem',
-          right: '-10rem',
-          width: '20rem',
-          height: '20rem',
-          background: status === 'success' 
-            ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2))'
-            : 'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.2))',
+          top: '10%',
+          left: '10%',
+          width: '300px',
+          height: '300px',
+          background: 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
-          filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite'
+          filter: 'blur(60px)',
+          animation: 'float 6s ease-in-out infinite'
         }} />
         <div style={{
           position: 'absolute',
-          bottom: '-10rem',
-          left: '-10rem',
-          width: '20rem',
-          height: '20rem',
-          background: status === 'success'
-            ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(16, 185, 129, 0.2))'
-            : 'linear-gradient(135deg, rgba(220, 38, 38, 0.3), rgba(185, 28, 28, 0.2))',
+          top: '60%',
+          right: '15%',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
-          filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite',
-          animationDelay: '2s'
+          filter: 'blur(40px)',
+          animation: 'float 8s ease-in-out infinite reverse'
         }} />
       </div>
 
-      <div style={cardStyle}>
+      <div style={{...cardStyle, position: 'relative', zIndex: 1}}>
         {status === 'success' ? (
           <>
             <div style={successLogoStyle}>
               <CheckCircle color="white" size={40} />
             </div>
             
-            <h2 style={successTitleStyle}>Email Verified!</h2>
+            <h2 style={titleStyle}>Email Verified!</h2>
             
             <p style={messageStyle}>
               {message || 'Your email has been successfully verified. You can now access all features of your account.'}
@@ -322,11 +313,13 @@ const VerifyEmail = () => {
               style={buttonStyle}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.02)';
-                e.target.style.boxShadow = '0 6px 20px 0 rgba(4, 120, 87, 0.6)';
+                e.target.style.background = 'rgba(5, 150, 105, 0.9)';
+                e.target.style.boxShadow = '0 6px 40px rgba(16, 185, 129, 0.4)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.boxShadow = '0 4px 14px 0 rgba(4, 120, 87, 0.5)';
+                e.target.style.background = 'rgba(16, 185, 129, 0.8)';
+                e.target.style.boxShadow = '0 4px 30px rgba(16, 185, 129, 0.3)';
               }}
             >
               <CheckCircle style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
@@ -337,13 +330,13 @@ const VerifyEmail = () => {
             <div style={{ 
               marginTop: '1.5rem', 
               paddingTop: '1.5rem', 
-              borderTop: '1px solid rgba(16, 185, 129, 0.2)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.2)',
               textAlign: 'center'
             }}>
-              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+              <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '0.75rem' }}>
                 🎉 Your account is now fully activated
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#10b981' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#fff' }}>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{
                     width: '0.5rem',
@@ -388,7 +381,7 @@ const VerifyEmail = () => {
               <XCircle color="white" size={40} />
             </div>
             
-            <h2 style={errorTitleStyle}>Verification Failed</h2>
+            <h2 style={titleStyle}>Verification Failed</h2>
             
             <p style={messageStyle}>
               {message || 'We were unable to verify your email address. The verification link may have expired or is invalid.'}
@@ -399,13 +392,13 @@ const VerifyEmail = () => {
               style={dangerButtonStyle}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.02)';
-                e.target.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
-                e.target.style.boxShadow = '0 6px 20px 0 rgba(239, 68, 68, 0.6)';
+                e.target.style.background = 'rgba(220, 38, 38, 0.9)';
+                e.target.style.boxShadow = '0 6px 40px rgba(239, 68, 68, 0.4)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-                e.target.style.boxShadow = '0 4px 14px 0 rgba(239, 68, 68, 0.5)';
+                e.target.style.background = 'rgba(239, 68, 68, 0.8)';
+                e.target.style.boxShadow = '0 4px 30px rgba(239, 68, 68, 0.3)';
               }}
             >
               <RefreshCw style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
@@ -417,11 +410,13 @@ const VerifyEmail = () => {
               style={secondaryButtonStyle}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'scale(1.02)';
-                e.target.style.background = 'rgba(4, 120, 87, 0.15)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.target.style.boxShadow = '0 6px 40px rgba(255, 255, 255, 0.1)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'scale(1)';
-                e.target.style.background = 'rgba(4, 120, 87, 0.1)';
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                e.target.style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.1)';
               }}
             >
               <Mail style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
@@ -432,13 +427,13 @@ const VerifyEmail = () => {
             <div style={{ 
               marginTop: '1.5rem', 
               paddingTop: '1.5rem', 
-              borderTop: '1px solid rgba(239, 68, 68, 0.2)',
+              borderTop: '1px solid rgba(255, 255, 255, 0.2)',
               textAlign: 'center'
             }}>
-              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+              <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '0.75rem' }}>
                 🔧 Common issues and solutions
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#ef4444' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#fff' }}>
                 <span style={{ display: 'flex', alignItems: 'center' }}>
                   <div style={{
                     width: '0.5rem',
@@ -488,6 +483,10 @@ const VerifyEmail = () => {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
       `}</style>
     </div>

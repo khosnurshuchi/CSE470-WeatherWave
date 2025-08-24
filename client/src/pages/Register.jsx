@@ -3,7 +3,6 @@ import { User, Mail, Lock, Phone, Eye, EyeOff, Shield, CheckCircle, AlertCircle 
 import { authAPI } from '../services/api';
 import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 
-
 const Register = () => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -55,7 +54,6 @@ const Register = () => {
     return true;
   };
 
-  // REPLACE THE COMMENTED CODE AND LOOSE CODE WITH:
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -66,7 +64,6 @@ const Register = () => {
     setLoading(true);
 
     try {
-      // Mock API call that matches your authAPI.register structure
       const response = await authAPI.register({
         fullName: formData.fullName,
         email: formData.email,
@@ -74,17 +71,12 @@ const Register = () => {
         phoneNumber: formData.phoneNumber
       });
 
-      // if(!response.ok)
-      //   return
-      // Remove this line entirely, or use:
       if (!response.success) {
         throw new Error(response.message || 'Registration failed');
       }
       
-      // Show success state
       setRegistrationSuccess(true);
       
-      // Clear form
       setFormData({
         fullName: '',
         email: '',
@@ -109,7 +101,6 @@ const Register = () => {
     navigate('/login');
   };
 
-  // Smart validation helpers
   const getPasswordStrength = () => {
     const password = formData.password;
     if (!password) return { strength: 0, label: '', color: '' };
@@ -120,10 +111,10 @@ const Register = () => {
     if (password.match(/[A-Z]/)) strength += 25;
     if (password.match(/[0-9!@#$%^&*]/)) strength += 25;
     
-    if (strength <= 25) return { strength, label: 'Weak', color: '#ef4444' };
-    if (strength <= 50) return { strength, label: 'Fair', color: '#eab308' };
-    if (strength <= 75) return { strength, label: 'Good', color: '#047857' };
-    return { strength, label: 'Strong', color: '#065f46' };
+    if (strength <= 25) return { strength, label: 'Weak', color: '#f87171' };
+    if (strength <= 50) return { strength, label: 'Fair', color: '#fbbf24' };
+    if (strength <= 75) return { strength, label: 'Good', color: '#34d399' };
+    return { strength, label: 'Strong', color: '#10b981' };
   };
 
   const isEmailValid = formData.email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
@@ -131,46 +122,49 @@ const Register = () => {
   const passwordMatch = formData.confirmPassword && formData.password === formData.confirmPassword;
   const passwordStrength = getPasswordStrength();
 
-  // Inline styles for better compatibility
+  // Main container style matching dashboard
   const containerStyle = {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    padding: '3rem 1rem',
+    padding: '2rem 1rem',
     position: 'relative'
   };
 
+  // Glassmorphism card style
   const cardStyle = {
-    background: 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(20px)',
+    background: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     padding: '2.5rem',
-    borderRadius: '1.5rem',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    border: '1px solid rgba(4, 120, 87, 0.2)',
+    borderRadius: '1rem',
     maxWidth: '28rem',
     margin: '0 auto',
-    width: '100%'
+    width: '100%',
+    color: '#fff'
   };
 
   const logoStyle = {
     width: '4rem',
     height: '4rem',
-    background: 'linear-gradient(135deg, #047857, #065f46)',
+    background: 'rgba(255, 255, 255, 0.3)',
     borderRadius: '1rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     margin: '0 auto 1.5rem',
-    boxShadow: '0 10px 25px rgba(4, 120, 87, 0.3)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     transition: 'transform 0.3s ease'
   };
 
   const successLogoStyle = {
     ...logoStyle,
-    background: 'linear-gradient(135deg, #10b981, #047857)',
-    boxShadow: '0 10px 25px rgba(16, 185, 129, 0.3)',
+    background: 'rgba(16, 185, 129, 0.8)',
+    boxShadow: '0 4px 30px rgba(16, 185, 129, 0.3)',
     animation: 'pulse 2s infinite'
   };
 
@@ -178,17 +172,8 @@ const Register = () => {
     fontSize: '2.25rem',
     fontWeight: 'bold',
     textAlign: 'center',
-    background: 'linear-gradient(135deg, #047857, #065f46)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
+    color: '#fff',
     marginBottom: '1rem'
-  };
-
-  const successTitleStyle = {
-    ...titleStyle,
-    background: 'linear-gradient(135deg, #10b981, #047857)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent'
   };
 
   const inputGroupStyle = {
@@ -199,7 +184,7 @@ const Register = () => {
     display: 'block',
     fontSize: '0.875rem',
     fontWeight: '600',
-    color: '#374151',
+    color: 'rgba(255, 255, 255, 0.9)',
     marginBottom: '0.5rem'
   };
 
@@ -214,14 +199,16 @@ const Register = () => {
     paddingRight: formData[fieldName] ? '3rem' : '1rem',
     paddingTop: '1rem',
     paddingBottom: '1rem',
-    border: `2px solid ${focusedField === fieldName ? '#047857' : '#d1d5db'}`,
+    border: `2px solid ${focusedField === fieldName ? 'rgba(255, 255, 255, 0.5)' : 'rgba(255, 255, 255, 0.2)'}`,
     borderRadius: '0.75rem',
     transition: 'all 0.3s ease',
-    background: 'white',
+    background: 'rgba(255, 255, 255, 0.1)',
     fontSize: '1rem',
     outline: 'none',
-    boxShadow: focusedField === fieldName ? '0 0 0 4px rgba(4, 120, 87, 0.1)' : 'none',
-    boxSizing: 'border-box'
+    boxShadow: focusedField === fieldName ? '0 0 0 4px rgba(255, 255, 255, 0.1)' : 'none',
+    boxSizing: 'border-box',
+    color: '#fff',
+    backdropFilter: 'blur(10px)'
   });
 
   const iconStyle = {
@@ -231,7 +218,7 @@ const Register = () => {
     transform: 'translateY(-50%)',
     width: '1.25rem',
     height: '1.25rem',
-    color: focusedField ? '#047857' : '#9ca3af',
+    color: focusedField ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)',
     transition: 'color 0.2s ease'
   };
 
@@ -250,31 +237,24 @@ const Register = () => {
     justifyContent: 'center',
     alignItems: 'center',
     padding: '1rem 1.5rem',
-    background: loading ? '#9ca3af' : 'linear-gradient(135deg, #047857, #065f46)',
-    color: 'white',
+    background: loading ? 'rgba(255, 255, 255, 0.3)' : 'rgba(255, 255, 255, 0.2)',
+    color: '#fff',
     fontSize: '1rem',
     fontWeight: '600',
-    border: 'none',
+    border: '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '0.75rem',
     cursor: loading ? 'not-allowed' : 'pointer',
     transition: 'all 0.2s ease',
-    boxShadow: '0 4px 14px 0 rgba(4, 120, 87, 0.5)',
+    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
     transform: 'scale(1)',
-    boxSizing: 'border-box'
-  };
-
-  const secondaryButtonStyle = {
-    ...buttonStyle,
-    background: 'rgba(4, 120, 87, 0.1)',
-    color: '#047857',
-    border: '2px solid rgba(4, 120, 87, 0.2)',
-    boxShadow: 'none'
+    boxSizing: 'border-box',
+    backdropFilter: 'blur(10px)'
   };
 
   const progressBarStyle = {
     width: '100%',
     height: '0.5rem',
-    backgroundColor: '#e5e7eb',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: '0.25rem',
     overflow: 'hidden',
     marginTop: '0.5rem'
@@ -294,48 +274,50 @@ const Register = () => {
       <div style={containerStyle}>
         {/* Animated Background Elements */}
         <div style={{
-          position: 'absolute',
-          inset: '0',
-          overflow: 'hidden',
-          pointerEvents: 'none'
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0
         }}>
           <div style={{
             position: 'absolute',
-            top: '-10rem',
-            right: '-10rem',
-            width: '20rem',
-            height: '20rem',
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2))',
+            top: '10%',
+            left: '10%',
+            width: '300px',
+            height: '300px',
+            background: 'rgba(255, 255, 255, 0.1)',
             borderRadius: '50%',
-            filter: 'blur(3rem)',
-            animation: 'pulse 4s infinite'
+            filter: 'blur(60px)',
+            animation: 'float 6s ease-in-out infinite'
           }} />
           <div style={{
             position: 'absolute',
-            bottom: '-10rem',
-            left: '-10rem',
-            width: '20rem',
-            height: '20rem',
-            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(16, 185, 129, 0.2))',
+            top: '60%',
+            right: '15%',
+            width: '200px',
+            height: '200px',
+            background: 'rgba(255, 255, 255, 0.1)',
             borderRadius: '50%',
-            filter: 'blur(3rem)',
-            animation: 'pulse 4s infinite',
-            animationDelay: '2s'
+            filter: 'blur(40px)',
+            animation: 'float 8s ease-in-out infinite reverse'
           }} />
         </div>
 
-        <div style={cardStyle}>
+        <div style={{...cardStyle, zIndex: 1}}>
           <div style={successLogoStyle}>
             <CheckCircle color="white" size={32} />
           </div>
           
-          <h2 style={successTitleStyle}>Registration Successful!</h2>
+          <h2 style={titleStyle}>Registration Successful!</h2>
           
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <p style={{ fontSize: '1rem', color: '#374151', marginBottom: '1rem', fontWeight: '600' }}>
+            <p style={{ fontSize: '1rem', color: 'rgba(255, 255, 255, 0.9)', marginBottom: '1rem', fontWeight: '600' }}>
               Welcome! Your account has been created.
             </p>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: '1.5' }}>
+            <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)', lineHeight: '1.5' }}>
               We've sent a verification email to your address. Please check your inbox and click the verification link to activate your account.
             </p>
           </div>
@@ -343,20 +325,26 @@ const Register = () => {
           <button
             onClick={handleBackToLogin}
             style={buttonStyle}
-            onMouseEnter={(e) => (e.target.style.transform = 'scale(1.02)')}
-            onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.02)';
+              e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1)';
+              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+            }}
           >
             <Shield style={{ width: '1.25rem', height: '1.25rem', marginRight: '0.5rem' }} />
             Continue to Login
           </button>
 
           <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '1rem' }}>
               Didn't receive the email?{' '}
               <button
                 onClick={() => navigate('/resend-verification')}
                 style={{
-                  color: '#047857',
+                  color: 'rgba(255, 255, 255, 0.9)',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
@@ -373,13 +361,13 @@ const Register = () => {
           <div style={{ 
             marginTop: '1.5rem', 
             paddingTop: '1.5rem', 
-            borderTop: '1px solid rgba(16, 185, 129, 0.2)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.2)',
             textAlign: 'center'
           }}>
-            <p style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.75rem' }}>
-              🎉 Next steps to complete your setup
+            <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.75rem' }}>
+              Next steps to complete your setup
             </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#10b981' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.8)' }}>
               <span style={{ display: 'flex', alignItems: 'center' }}>
                 <div style={{
                   width: '0.5rem',
@@ -424,6 +412,10 @@ const Register = () => {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
           }
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+          }
         `}</style>
       </div>
     );
@@ -434,33 +426,35 @@ const Register = () => {
     <div style={containerStyle}>
       {/* Animated Background Elements */}
       <div style={{
-        position: 'absolute',
-        inset: '0',
-        overflow: 'hidden',
-        pointerEvents: 'none'
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0
       }}>
         <div style={{
           position: 'absolute',
-          top: '-10rem',
-          right: '-10rem',
-          width: '20rem',
-          height: '20rem',
-          background: 'linear-gradient(135deg, rgba(4, 120, 87, 0.3), rgba(6, 95, 70, 0.2))',
+          top: '10%',
+          left: '10%',
+          width: '300px',
+          height: '300px',
+          background: 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
-          filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite'
+          filter: 'blur(60px)',
+          animation: 'float 6s ease-in-out infinite'
         }} />
         <div style={{
           position: 'absolute',
-          bottom: '-10rem',
-          left: '-10rem',
-          width: '20rem',
-          height: '20rem',
-          background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(4, 120, 87, 0.2))',
+          top: '60%',
+          right: '15%',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255, 255, 255, 0.1)',
           borderRadius: '50%',
-          filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite',
-          animationDelay: '2s'
+          filter: 'blur(40px)',
+          animation: 'float 8s ease-in-out infinite reverse'
         }} />
         <div style={{
           position: 'absolute',
@@ -469,27 +463,27 @@ const Register = () => {
           transform: 'translate(-50%, -50%)',
           width: '24rem',
           height: '24rem',
-          background: 'linear-gradient(135deg, rgba(6, 95, 70, 0.2), rgba(4, 120, 87, 0.2))',
+          background: 'rgba(255, 255, 255, 0.05)',
           borderRadius: '50%',
           filter: 'blur(3rem)',
-          animation: 'pulse 4s infinite',
-          animationDelay: '4s'
+          animation: 'float 4s ease-in-out infinite',
+          animationDelay: '2s'
         }} />
       </div>
 
-      <div style={cardStyle}>
+      <div style={{...cardStyle, zIndex: 1}}>
         <div style={logoStyle}>
           <Shield color="white" size={32} />
         </div>
         
         <h2 style={titleStyle}>Create your account</h2>
         
-        <p style={{ textAlign: 'center', fontSize: '0.875rem', color: '#6b7280', marginBottom: '2rem' }}>
+        <p style={{ textAlign: 'center', fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '2rem' }}>
           Or{' '}
           <button 
             onClick={handleSignIn}
             style={{ 
-              color: '#047857', 
+              color: 'rgba(255, 255, 255, 0.9)', 
               textDecoration: 'none', 
               fontWeight: '500', 
               background: 'none', 
@@ -497,8 +491,8 @@ const Register = () => {
               cursor: 'pointer',
               transition: 'color 0.2s ease'
             }}
-            onMouseEnter={(e) => e.target.style.color = '#065f46'}
-            onMouseLeave={(e) => e.target.style.color = '#047857'}
+            onMouseEnter={(e) => e.target.style.color = '#fff'}
+            onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.9)'}
           >
             sign in to your existing account
           </button>
@@ -509,7 +503,7 @@ const Register = () => {
           <div style={inputGroupStyle}>
             <label style={labelStyle}>Full Name</label>
             <div style={inputContainerStyle}>
-              <User style={{...iconStyle, color: focusedField === 'fullName' ? '#047857' : '#9ca3af'}} />
+              <User style={{...iconStyle, color: focusedField === 'fullName' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}} />
               <input
                 name="fullName"
                 type="text"
@@ -522,7 +516,7 @@ const Register = () => {
                 placeholder="Enter your full name"
               />
               {formData.fullName && (
-                <CheckCircle style={{...validationIconStyle, color: '#047857'}} />
+                <CheckCircle style={{...validationIconStyle, color: '#10b981'}} />
               )}
             </div>
           </div>
@@ -531,7 +525,7 @@ const Register = () => {
           <div style={inputGroupStyle}>
             <label style={labelStyle}>Email address</label>
             <div style={inputContainerStyle}>
-              <Mail style={{...iconStyle, color: focusedField === 'email' ? '#047857' : '#9ca3af'}} />
+              <Mail style={{...iconStyle, color: focusedField === 'email' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}} />
               <input
                 name="email"
                 type="email"
@@ -545,9 +539,9 @@ const Register = () => {
               />
               {formData.email && (
                 isEmailValid ? (
-                  <CheckCircle style={{...validationIconStyle, color: '#047857'}} />
+                  <CheckCircle style={{...validationIconStyle, color: '#10b981'}} />
                 ) : (
-                  <AlertCircle style={{...validationIconStyle, color: '#ef4444'}} />
+                  <AlertCircle style={{...validationIconStyle, color: '#f87171'}} />
                 )
               )}
             </div>
@@ -557,7 +551,7 @@ const Register = () => {
           <div style={inputGroupStyle}>
             <label style={labelStyle}>Phone Number</label>
             <div style={inputContainerStyle}>
-              <Phone style={{...iconStyle, color: focusedField === 'phoneNumber' ? '#047857' : '#9ca3af'}} />
+              <Phone style={{...iconStyle, color: focusedField === 'phoneNumber' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}} />
               <input
                 name="phoneNumber"
                 type="tel"
@@ -571,9 +565,9 @@ const Register = () => {
               />
               {formData.phoneNumber && (
                 isPhoneValid ? (
-                  <CheckCircle style={{...validationIconStyle, color: '#047857'}} />
+                  <CheckCircle style={{...validationIconStyle, color: '#10b981'}} />
                 ) : (
-                  <AlertCircle style={{...validationIconStyle, color: '#ef4444'}} />
+                  <AlertCircle style={{...validationIconStyle, color: '#f87171'}} />
                 )
               )}
             </div>
@@ -583,7 +577,7 @@ const Register = () => {
           <div style={inputGroupStyle}>
             <label style={labelStyle}>Password</label>
             <div style={inputContainerStyle}>
-              <Lock style={{...iconStyle, color: focusedField === 'password' ? '#047857' : '#9ca3af'}} />
+              <Lock style={{...iconStyle, color: focusedField === 'password' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}} />
               <input
                 name="password"
                 type={showPassword ? 'text' : 'password'}
@@ -606,11 +600,11 @@ const Register = () => {
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  color: '#9ca3af',
+                  color: 'rgba(255, 255, 255, 0.6)',
                   transition: 'color 0.2s ease'
                 }}
-                onMouseEnter={(e) => e.target.style.color = '#047857'}
-                onMouseLeave={(e) => e.target.style.color = '#9ca3af'}
+                onMouseEnter={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.9)'}
+                onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
@@ -618,7 +612,7 @@ const Register = () => {
             {formData.password && (
               <div style={{ marginTop: '0.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>Password Strength:</span>
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)' }}>Password Strength:</span>
                   <span style={{ fontSize: '0.75rem', fontWeight: '500', color: passwordStrength.color }}>
                     {passwordStrength.label}
                   </span>
@@ -634,7 +628,7 @@ const Register = () => {
           <div style={inputGroupStyle}>
             <label style={labelStyle}>Confirm Password</label>
             <div style={inputContainerStyle}>
-              <Lock style={{...iconStyle, color: focusedField === 'confirmPassword' ? '#047857' : '#9ca3af'}} />
+              <Lock style={{...iconStyle, color: focusedField === 'confirmPassword' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.6)'}} />
               <input
                 name="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -649,9 +643,9 @@ const Register = () => {
               <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 {formData.confirmPassword && (
                   passwordMatch ? (
-                    <CheckCircle style={{ width: '1.25rem', height: '1.25rem', color: '#047857' }} />
+                    <CheckCircle style={{ width: '1.25rem', height: '1.25rem', color: '#10b981' }} />
                   ) : (
-                    <AlertCircle style={{ width: '1.25rem', height: '1.25rem', color: '#ef4444' }} />
+                    <AlertCircle style={{ width: '1.25rem', height: '1.25rem', color: '#f87171' }} />
                   )
                 )}
                 <button
@@ -661,13 +655,13 @@ const Register = () => {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: '#9ca3af',
+                    color: 'rgba(255, 255, 255, 0.6)',
                     display: 'flex',
                     alignItems: 'center',
                     transition: 'color 0.2s ease'
                   }}
-                  onMouseEnter={(e) => e.target.style.color = '#047857'}
-                  onMouseLeave={(e) => e.target.style.color = '#9ca3af'}
+                  onMouseEnter={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.9)'}
+                  onMouseLeave={(e) => e.target.style.color = 'rgba(255, 255, 255, 0.6)'}
                 >
                   {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -680,8 +674,8 @@ const Register = () => {
             type="submit"
             disabled={loading}
             style={buttonStyle}
-            onMouseEnter={(e) => !loading && (e.target.style.transform = 'scale(1.02)')}
-            onMouseLeave={(e) => !loading && (e.target.style.transform = 'scale(1)')}
+            onMouseEnter={(e) => !loading && (e.target.style.transform = 'scale(1.02)' && (e.target.style.background = 'rgba(255, 255, 255, 0.3)'))}
+            onMouseLeave={(e) => !loading && (e.target.style.transform = 'scale(1)' && (e.target.style.background = 'rgba(255, 255, 255, 0.2)'))}
           >
             {loading ? (
               <>
@@ -709,18 +703,18 @@ const Register = () => {
         <div style={{ 
           marginTop: '1.5rem', 
           paddingTop: '1.5rem', 
-          borderTop: '1px solid rgba(4, 120, 87, 0.2)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.2)',
           textAlign: 'center'
         }}>
-          <p style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.75rem' }}>
-            🔒 Your data is protected with end-to-end encryption
+          <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.75rem' }}>
+            Your data is protected with end-to-end encryption
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: '#047857' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.8)' }}>
             <span style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{
                 width: '0.5rem',
                 height: '0.5rem',
-                backgroundColor: '#047857',
+                backgroundColor: '#10b981',
                 borderRadius: '50%',
                 marginRight: '0.25rem',
                 animation: 'pulse 2s infinite'
@@ -731,7 +725,7 @@ const Register = () => {
               <div style={{
                 width: '0.5rem',
                 height: '0.5rem',
-                backgroundColor: '#047857',
+                backgroundColor: '#10b981',
                 borderRadius: '50%',
                 marginRight: '0.25rem',
                 animation: 'pulse 2s infinite',
@@ -743,7 +737,7 @@ const Register = () => {
               <div style={{
                 width: '0.5rem',
                 height: '0.5rem',
-                backgroundColor: '#047857',
+                backgroundColor: '#10b981',
                 borderRadius: '50%',
                 marginRight: '0.25rem',
                 animation: 'pulse 2s infinite',
@@ -763,6 +757,10 @@ const Register = () => {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
       `}</style>
     </div>
