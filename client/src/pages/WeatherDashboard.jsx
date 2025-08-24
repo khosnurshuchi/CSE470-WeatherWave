@@ -18,7 +18,9 @@ import {
     AlertTriangle,
     RefreshCw,
     Plus,
-    ArrowRight
+    ArrowRight,
+    Search,
+    X
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -28,6 +30,16 @@ const WeatherDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [unit, setUnit] = useState('celsius');
     const [refreshing, setRefreshing] = useState(false);
+    
+    // Search functionality state
+    const [allLocations, setAllLocations] = useState([]);
+    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredLocations, setFilteredLocations] = useState([]);
+    const [selectedLocationModal, setSelectedLocationModal] = useState(null);
+    const [modalWeatherData, setModalWeatherData] = useState(null);
+    const [loadingModal, setLoadingModal] = useState(false);
+    
     const navigate = useNavigate();
     const { theme, getThemeStyles } = useTheme();
     const themeStyles = getThemeStyles();
@@ -35,7 +47,22 @@ const WeatherDashboard = () => {
     useEffect(() => {
         fetchWeatherData();
         fetchAlerts();
+        fetchAllLocations();
     }, [unit]);
+
+    // Filter locations based on search query
+    useEffect(() => {
+        if (searchQuery.trim() === '') {
+            setFilteredLocations(allLocations);
+        } else {
+            const filtered = allLocations.filter(location =>
+                location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                location.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                location.region?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setFilteredLocations(filtered);
+        }
+    }, [searchQuery, allLocations]);
 
     const fetchWeatherData = async () => {
         try {
@@ -57,6 +84,39 @@ const WeatherDashboard = () => {
         } catch (error) {
             console.error('Error fetching alerts:', error);
         }
+    };
+
+    const fetchAllLocations = async () => {
+        try {
+            const response = await weatherAPI.getAllLocations();
+            setAllLocations(response.data || []);
+            setFilteredLocations(response.data || []);
+        } catch (error) {
+            console.error('Error fetching all locations:', error);
+            toast.error('Failed to fetch locations for search');
+        }
+    };
+
+    const handleLocationClick = async (location) => {
+        setSelectedLocationModal(location);
+        setLoadingModal(true);
+        
+        try {
+            const response = await weatherAPI.getLocationWeather(location._id, unit);
+            setModalWeatherData(response.data);
+        } catch (error) {
+            console.error('Error fetching location weather:', error);
+            toast.error('Failed to fetch weather data for this location');
+            setModalWeatherData(null);
+        } finally {
+            setLoadingModal(false);
+        }
+    };
+
+    const closeModal = () => {
+        setSelectedLocationModal(null);
+        setModalWeatherData(null);
+        setLoadingModal(false);
     };
 
     const handleRefresh = async () => {
@@ -364,7 +424,326 @@ const WeatherDashboard = () => {
                         <Settings2 size={16} />
                         <span className="mobile-hidden">Manage</span>
                     </button>
+
+                    {/* NEW SEARCH BUTTON */}
+                    <button
+                        onClick={() => setSearchVisible(!searchVisible)}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            padding: 'clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px)',
+                            background: searchVisible ? 'linear-gradient(135deg, #3b82f6, #1e40af)' : themeStyles.cardBackground,
+                            border: `1px solid ${themeStyles.border}`,
+                            borderRadius: '12px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            color: searchVisible ? 'white' : themeStyles.textPrimary,
+                            boxShadow: `0 4px 20px ${themeStyles.shadow}`,
+                            backdropFilter: 'blur(15px)',
+                            fontSize: 'clamp(0.75rem, 2vw, 0.875rem)'
+                        }}
+                    >
+                        <Search size={16} />
+                        <span className="mobile-hidden">Search</span>
+                    </button>
                 </div>
+
+                {/* SEARCH DROPDOWN */}
+                {searchVisible && (
+                    <div style={{
+                        position: 'fixed',
+                        top: '5rem',
+                        right: '2rem',
+                        width: 'min(400px, 90vw)',
+                        background: themeStyles.cardBackground,
+                        borderRadius: '20px',
+                        padding: '1.5rem',
+                        boxShadow: `0 25px 50px ${themeStyles.shadow}`,
+                        backdropFilter: 'blur(20px)',
+                        border: `1px solid ${themeStyles.border}`,
+                        zIndex: 1,
+                        maxHeight: '70vh',
+                        overflowY: 'auto'
+                    }} className="mobile-search-position">
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            marginBottom: '1rem'
+                        }}>
+                            <Search size={20} style={{ color: themeStyles.textSecondary }} />
+                            <input
+                                type="text"
+                                placeholder="Search locations..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                style={{
+                                    flex: 1,
+                                    padding: '0.75rem',
+                                    background: themeStyles.background,
+                                    border: `1px solid ${themeStyles.border}`,
+                                    borderRadius: '12px',
+                                    fontSize: '1rem',
+                                    color: themeStyles.textPrimary,
+                                    outline: 'none'
+                                }}
+                                autoFocus
+                            />
+                            <button
+                                onClick={() => {
+                                    setSearchVisible(false);
+                                    setSearchQuery('');
+                                }}
+                                style={{
+                                    padding: '0.5rem',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    color: themeStyles.textSecondary,
+                                    transition: 'all 0.2s ease'
+                                }}
+                            >
+                                <X size={16} />
+                            </button>
+                        </div>
+
+                        <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
+                            {filteredLocations.length > 0 ? (
+                                filteredLocations.map((location) => (
+                                    <div
+                                        key={location._id}
+                                        onClick={() => handleLocationClick(location)}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '0.75rem',
+                                            padding: '1rem',
+                                            borderRadius: '12px',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            marginBottom: '0.5rem',
+                                            background: 'transparent',
+                                            border: `1px solid transparent`
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.target.style.background = themeStyles.background;
+                                            e.target.style.borderColor = themeStyles.border;
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.target.style.background = 'transparent';
+                                            e.target.style.borderColor = 'transparent';
+                                        }}
+                                    >
+                                        <MapPin size={16} style={{ color: themeStyles.textSecondary, flexShrink: 0 }} />
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{
+                                                fontWeight: '600',
+                                                color: themeStyles.textPrimary,
+                                                fontSize: '1rem'
+                                            }}>
+                                                {location.city}
+                                            </div>
+                                            <div style={{
+                                                fontSize: '0.875rem',
+                                                color: themeStyles.textSecondary
+                                            }}>
+                                                {location.region ? `${location.region}, ` : ''}{location.country}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div style={{
+                                    textAlign: 'center',
+                                    padding: '2rem',
+                                    color: themeStyles.textSecondary
+                                }}>
+                                    No locations found matching "{searchQuery}"
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* LOCATION DETAILS MODAL */}
+                {selectedLocationModal && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 2000,
+                        padding: '1rem'
+                    }} onClick={closeModal}>
+                        <div
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                background: themeStyles.cardBackground,
+                                borderRadius: '24px',
+                                padding: '2rem',
+                                width: 'min(500px, 90vw)',
+                                maxHeight: '80vh',
+                                overflowY: 'auto',
+                                boxShadow: `0 25px 50px ${themeStyles.shadow}`,
+                                backdropFilter: 'blur(20px)',
+                                border: `1px solid ${themeStyles.border}`
+                            }}
+                        >
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: '2rem'
+                            }}>
+                                <h2 style={{
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    color: themeStyles.textPrimary,
+                                    margin: 0
+                                }}>
+                                    {selectedLocationModal.city}, {selectedLocationModal.country}
+                                </h2>
+                                <button
+                                    onClick={closeModal}
+                                    style={{
+                                        padding: '0.5rem',
+                                        background: 'transparent',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        cursor: 'pointer',
+                                        color: themeStyles.textSecondary,
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            {loadingModal ? (
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '3rem'
+                                }}>
+                                    <div className="loading-spinner"></div>
+                                    <span style={{ marginLeft: '1rem', color: themeStyles.textSecondary }}>
+                                        Loading weather data...
+                                    </span>
+                                </div>
+                            ) : modalWeatherData ? (
+                                <div>
+                                    {/* Current Weather */}
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '1.5rem',
+                                        padding: '1.5rem',
+                                        background: themeStyles.background,
+                                        borderRadius: '16px',
+                                        marginBottom: '1.5rem'
+                                    }}>
+                                        {getWeatherIcon(modalWeatherData.description, 60)}
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{
+                                                fontSize: '2.5rem',
+                                                fontWeight: 'bold',
+                                                color: themeStyles.textPrimary,
+                                                lineHeight: 1
+                                            }}>
+                                                {convertTemperature(modalWeatherData.temperature, modalWeatherData.temperatureType)}°{unit.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div style={{
+                                                fontSize: '1rem',
+                                                color: themeStyles.textSecondary,
+                                                textTransform: 'capitalize',
+                                                marginTop: '0.5rem'
+                                            }}>
+                                                {modalWeatherData.description}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Weather Details Grid */}
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(2, 1fr)',
+                                        gap: '1rem'
+                                    }}>
+                                        <div style={{
+                                            padding: '1rem',
+                                            background: themeStyles.background,
+                                            borderRadius: '12px',
+                                            textAlign: 'center'
+                                        }}>
+                                            <Droplets size={20} style={{ color: '#3b82f6', marginBottom: '0.5rem' }} />
+                                            <div style={{ fontSize: '0.875rem', color: themeStyles.textSecondary }}>Humidity</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: themeStyles.textPrimary }}>
+                                                {modalWeatherData.humidity}%
+                                            </div>
+                                        </div>
+
+                                        <div style={{
+                                            padding: '1rem',
+                                            background: themeStyles.background,
+                                            borderRadius: '12px',
+                                            textAlign: 'center'
+                                        }}>
+                                            <Wind size={20} style={{ color: '#10b981', marginBottom: '0.5rem' }} />
+                                            <div style={{ fontSize: '0.875rem', color: themeStyles.textSecondary }}>Wind Speed</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: themeStyles.textPrimary }}>
+                                                {modalWeatherData.windSpeed} km/h
+                                            </div>
+                                        </div>
+
+                                        <div style={{
+                                            padding: '1rem',
+                                            background: themeStyles.background,
+                                            borderRadius: '12px',
+                                            textAlign: 'center'
+                                        }}>
+                                            <Eye size={20} style={{ color: '#8b5cf6', marginBottom: '0.5rem' }} />
+                                            <div style={{ fontSize: '0.875rem', color: themeStyles.textSecondary }}>Visibility</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: themeStyles.textPrimary }}>
+                                                {modalWeatherData.visibility} km
+                                            </div>
+                                        </div>
+
+                                        <div style={{
+                                            padding: '1rem',
+                                            background: themeStyles.background,
+                                            borderRadius: '12px',
+                                            textAlign: 'center'
+                                        }}>
+                                            <Gauge size={20} style={{ color: '#f59e0b', marginBottom: '0.5rem' }} />
+                                            <div style={{ fontSize: '0.875rem', color: themeStyles.textSecondary }}>Pressure</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: themeStyles.textPrimary }}>
+                                                {modalWeatherData.pressure} hPa
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div style={{
+                                    textAlign: 'center',
+                                    padding: '2rem',
+                                    color: themeStyles.textSecondary
+                                }}>
+                                    <Cloud size={60} style={{ marginBottom: '1rem' }} />
+                                    <p>No weather data available for this location</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Weather Alerts - Responsive */}
                 {alerts.length > 0 && (
@@ -666,7 +1045,117 @@ const WeatherDashboard = () => {
                                 gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
                                 gap: 'clamp(0.75rem, 2vw, 1rem)'
                             }}>
-                                {/* Your existing highlight cards with responsive styling */}
+                                {defaultLocation?.currentWeather && (
+                                    <>
+                                        <div style={{
+                                            background: themeStyles.cardBackground,
+                                            borderRadius: '20px',
+                                            padding: 'clamp(1rem, 3vw, 1.5rem)',
+                                            boxShadow: `0 15px 30px ${themeStyles.shadow}`,
+                                            backdropFilter: 'blur(15px)',
+                                            border: `1px solid ${themeStyles.border}`,
+                                            textAlign: 'center'
+                                        }}>
+                                            <Droplets size={32} style={{ color: '#3b82f6', marginBottom: '1rem' }} />
+                                            <h3 style={{
+                                                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                                                color: themeStyles.textSecondary,
+                                                margin: '0 0 0.5rem 0'
+                                            }}>
+                                                Humidity
+                                            </h3>
+                                            <p style={{
+                                                fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                                                fontWeight: 'bold',
+                                                color: themeStyles.textPrimary,
+                                                margin: 0
+                                            }}>
+                                                {defaultLocation.currentWeather.humidity}%
+                                            </p>
+                                        </div>
+
+                                        <div style={{
+                                            background: themeStyles.cardBackground,
+                                            borderRadius: '20px',
+                                            padding: 'clamp(1rem, 3vw, 1.5rem)',
+                                            boxShadow: `0 15px 30px ${themeStyles.shadow}`,
+                                            backdropFilter: 'blur(15px)',
+                                            border: `1px solid ${themeStyles.border}`,
+                                            textAlign: 'center'
+                                        }}>
+                                            <Wind size={32} style={{ color: '#10b981', marginBottom: '1rem' }} />
+                                            <h3 style={{
+                                                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                                                color: themeStyles.textSecondary,
+                                                margin: '0 0 0.5rem 0'
+                                            }}>
+                                                Wind Speed
+                                            </h3>
+                                            <p style={{
+                                                fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                                                fontWeight: 'bold',
+                                                color: themeStyles.textPrimary,
+                                                margin: 0
+                                            }}>
+                                                {defaultLocation.currentWeather.windSpeed} km/h
+                                            </p>
+                                        </div>
+
+                                        <div style={{
+                                            background: themeStyles.cardBackground,
+                                            borderRadius: '20px',
+                                            padding: 'clamp(1rem, 3vw, 1.5rem)',
+                                            boxShadow: `0 15px 30px ${themeStyles.shadow}`,
+                                            backdropFilter: 'blur(15px)',
+                                            border: `1px solid ${themeStyles.border}`,
+                                            textAlign: 'center'
+                                        }}>
+                                            <Eye size={32} style={{ color: '#8b5cf6', marginBottom: '1rem' }} />
+                                            <h3 style={{
+                                                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                                                color: themeStyles.textSecondary,
+                                                margin: '0 0 0.5rem 0'
+                                            }}>
+                                                Visibility
+                                            </h3>
+                                            <p style={{
+                                                fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                                                fontWeight: 'bold',
+                                                color: themeStyles.textPrimary,
+                                                margin: 0
+                                            }}>
+                                                {defaultLocation.currentWeather.visibility} km
+                                            </p>
+                                        </div>
+
+                                        <div style={{
+                                            background: themeStyles.cardBackground,
+                                            borderRadius: '20px',
+                                            padding: 'clamp(1rem, 3vw, 1.5rem)',
+                                            boxShadow: `0 15px 30px ${themeStyles.shadow}`,
+                                            backdropFilter: 'blur(15px)',
+                                            border: `1px solid ${themeStyles.border}`,
+                                            textAlign: 'center'
+                                        }}>
+                                            <Gauge size={32} style={{ color: '#f59e0b', marginBottom: '1rem' }} />
+                                            <h3 style={{
+                                                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                                                color: themeStyles.textSecondary,
+                                                margin: '0 0 0.5rem 0'
+                                            }}>
+                                                Pressure
+                                            </h3>
+                                            <p style={{
+                                                fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                                                fontWeight: 'bold',
+                                                color: themeStyles.textPrimary,
+                                                margin: 0
+                                            }}>
+                                                {defaultLocation.currentWeather.pressure} hPa
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -726,8 +1215,8 @@ const WeatherDashboard = () => {
                                                         color: themeStyles.textSecondary,
                                                         textTransform: 'capitalize'
                                                     }}>
-                                                        {location.currentWeather.description}.
-                                                        Humidity: {location.currentWeather.humidity}%
+                                                        {location.currentWeather.description}
+                                                        {location.currentWeather.humidity && `. Humidity: ${location.currentWeather.humidity}%`}
                                                     </span>
                                                 </div>
                                             </>
@@ -840,14 +1329,56 @@ const WeatherDashboard = () => {
                     margin-top: 5rem;
                 }
                 
+                .mobile-search-position {
+                    position: relative !important;
+                    top: auto !important;
+                    right: auto !important;
+                    width: 100% !important;
+                    margin-bottom: 2rem;
+                }
+                
+                .mobile-stack {
+                    flex-direction: column !important;
+                    text-align: center !important;
+                }
+                
+                .mobile-center {
+                    text-align: center !important;
+                    align-items: center !important;
+                }
+                
+                .mobile-hidden {
+                    display: none;
+                }
+                
                 @media (min-width: 768px) {
                     .mobile-relative {
-                       
+                        top: 2rem !important;
                         margin-bottom: 0;
                     }
                     
                     .mobile-mt-20 {
                         margin-top: 1rem;
+                    }
+                    
+                    .mobile-search-position {
+                        top: 5rem !important;
+                        width: min(400px, 90vw) !important;
+                        margin-bottom: 0;
+                    }
+                    
+                    .mobile-stack {
+                        flex-direction: row !important;
+                        text-align: left !important;
+                    }
+                    
+                    .mobile-center {
+                        text-align: right !important;
+                        align-items: flex-end !important;
+                    }
+                    
+                    .mobile-hidden {
+                        display: inline;
                     }
                 }
                 
@@ -859,8 +1390,18 @@ const WeatherDashboard = () => {
                 .spinning {
                     animation: spin 1s linear infinite;
                 }
+                
+                .loading-spinner {
+                    width: 2rem;
+                    height: 2rem;
+                    border: 3px solid #e5e7eb;
+                    border-top: 3px solid #3b82f6;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                }
             `}</style>
         </section>
     );
 };
+
 export default WeatherDashboard;
