@@ -262,6 +262,16 @@ export const weatherAPI = {
     }
   },
 
+  // NEW: Get weather alerts for user's default location  
+  getDefaultLocationAlerts: async (limit = 50) => {
+    try {
+      const response = await api.get(`/weather/alerts/default-location?limit=${limit}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get default location alerts' };
+    }
+  },
+
   markAlertAsRead: async (alertId) => {
     try {
       const response = await api.put(`/weather/alerts/${alertId}/read`);

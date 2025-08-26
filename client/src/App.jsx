@@ -15,6 +15,7 @@ import ResendVerification from './pages/ResendVerification';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PublicRoute from './components/PublicRoute';
+import WeatherAlerts from './pages/WeatherAlerts';
 
 // Weather Pages
 import WeatherDashboard from './pages/WeatherDashboard';
@@ -109,6 +110,15 @@ function AppRouter() {
           element={
             <ProtectedRoute>
               <WeatherDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/alerts"
+          element={
+            <ProtectedRoute>
+              <WeatherAlerts />
             </ProtectedRoute>
           }
         />

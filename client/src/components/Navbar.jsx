@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { LogOut, User, Menu, X, Cloud, MapPin, Home, Sun, Moon } from 'lucide-react';
+import { LogOut, User, Menu, X, Cloud, MapPin, Home, Sun, Moon, Bell } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
@@ -272,6 +272,30 @@ const Navbar = () => {
                 <MapPin size={18} />
                 <span>Locations</span>
               </Link>
+
+              <Link
+                to="/alerts"
+                style={navLinkStyle('/alerts')}
+                onMouseEnter={(e) => {
+                  if (!isActive('/alerts')) {
+                    e.target.style.background = theme === 'dark'
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : 'rgba(255, 255, 255, 0.15)';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive('/alerts')) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = 'none';
+                  }
+                }}
+              >
+                <Bell size={18} />
+                <span>Alerts</span>
+              </Link>
             </div>
 
             {/* Right side - Theme toggle, User menu, Mobile menu */}
@@ -410,6 +434,15 @@ const Navbar = () => {
                 >
                   <MapPin size={20} />
                   <span>Locations</span>
+                </Link>
+
+                <Link
+                  to="/alerts"
+                  style={navLinkStyle('/alerts')}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Bell size={20} />
+                  <span>Weather Alerts</span>
                 </Link>
 
                 <Link

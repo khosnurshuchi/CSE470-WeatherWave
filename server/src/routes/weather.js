@@ -5,6 +5,7 @@ import WeatherData from "../models/WeatherData.js";
 import WeatherAlert from "../models/WeatherAlert.js";
 import TimeStamp from "../models/TimeStamp.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { processPendingWeatherAlerts } from "../utils/emailService.js";
 
 const router = express.Router();
 
@@ -241,7 +242,7 @@ router.get("/locations/:locationId/weather", authenticateToken, async (req, res)
     }
 });
 
-// Get hourly weather trends for location
+// UPDATED: Get hourly weather trends for location (enhanced with better data handling)
 router.get("/locations/:locationId/hourly", authenticateToken, async (req, res) => {
     try {
         const { locationId } = req.params;
@@ -251,7 +252,7 @@ router.get("/locations/:locationId/hourly", authenticateToken, async (req, res) 
         const userLocation = await UserLocation.findOne({
             locationId,
             userId: req.userId
-        });
+        }).populate('locationId');
 
         if (!userLocation) {
             return res.status(404).json({
@@ -265,24 +266,43 @@ router.get("/locations/:locationId/hourly", authenticateToken, async (req, res) 
 
         const hourlyData = await WeatherData.getLocationHistory(locationId, hoursAgo, now, parseInt(hours));
 
-        const convertedData = hourlyData.map(data => ({
-            ...data,
-            temperature: unit === data.temperatureType ?
-                data.temperature :
-                (unit === 'celsius' ?
-                    (data.temperature - 32) * 5 / 9 :
-                    (data.temperature * 9 / 5) + 32),
-            temperatureType: unit,
-            feelsLike: data.feelsLike && unit !== data.temperatureType ?
-                (unit === 'celsius' ?
-                    (data.feelsLike - 32) * 5 / 9 :
-                    (data.feelsLike * 9 / 5) + 32) :
-                data.feelsLike
-        }));
+        const convertedData = hourlyData.map(data => {
+            const convertedTemp = unit === data.temperatureType ? data.temperature :
+                (unit === 'celsius' ? (data.temperature - 32) * 5 / 9 : (data.temperature * 9 / 5) + 32);
+
+            const convertedFeelsLike = data.feelsLike && unit !== data.temperatureType ?
+                (unit === 'celsius' ? (data.feelsLike - 32) * 5 / 9 : (data.feelsLike * 9 / 5) + 32) :
+                data.feelsLike;
+
+            return {
+                ...data,
+                temperature: Math.round(convertedTemp * 10) / 10, // Round to 1 decimal
+                temperatureType: unit,
+                feelsLike: convertedFeelsLike ? Math.round(convertedFeelsLike * 10) / 10 : null,
+                hourLabel: new Date(data.timestamp.time).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                }),
+                dateLabel: new Date(data.timestamp.time).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                })
+            };
+        });
 
         res.json({
             success: true,
-            data: convertedData
+            data: convertedData,
+            meta: {
+                location: userLocation.locationId,
+                totalRecords: convertedData.length,
+                timeRange: {
+                    from: hoursAgo.toISOString(),
+                    to: now.toISOString()
+                },
+                unit
+            }
         });
 
     } catch (error) {
@@ -328,6 +348,51 @@ router.get("/alerts", authenticateToken, async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to get weather alerts",
+            error: error.message
+        });
+    }
+});
+
+// NEW ROUTE: Get weather alerts for user's default location
+router.get("/alerts/default-location", authenticateToken, async (req, res) => {
+    try {
+        const { limit = 50 } = req.query;
+
+        const alerts = await WeatherAlert.getAlertsForUserDefaultLocation(req.userId, limit);
+
+        if (alerts.length === 0) {
+            return res.json({
+                success: true,
+                message: "No alerts found for your default location",
+                data: []
+            });
+        }
+
+        // Group alerts by date for better presentation
+        const alertsByDate = alerts.reduce((acc, alert) => {
+            const date = new Date(alert.createdAt).toDateString();
+            if (!acc[date]) acc[date] = [];
+            acc[date].push(alert);
+            return acc;
+        }, {});
+
+        res.json({
+            success: true,
+            data: alerts,
+            groupedByDate: alertsByDate,
+            meta: {
+                totalAlerts: alerts.length,
+                unreadCount: alerts.filter(alert => !alert.isRead).length,
+                activeCount: alerts.filter(alert => alert.isActive).length,
+                emailSentCount: alerts.filter(alert => alert.emailSent).length
+            }
+        });
+
+    } catch (error) {
+        console.error("Get default location alerts error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to get alerts for default location",
             error: error.message
         });
     }
@@ -401,6 +466,29 @@ router.put("/alerts/:alertId/dismiss", authenticateToken, async (req, res) => {
     }
 });
 
+// NEW ROUTE: Process pending email alerts (manual trigger for testing)
+router.post("/alerts/process-emails", authenticateToken, async (req, res) => {
+    try {
+        console.log("Manual trigger for processing weather alert emails");
+
+        const result = await processPendingWeatherAlerts();
+
+        res.json({
+            success: true,
+            message: "Email processing completed",
+            data: result
+        });
+
+    } catch (error) {
+        console.error("Process email alerts error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to process email alerts",
+            error: error.message
+        });
+    }
+});
+
 // Update weather data (simulate fetching new data from weather API)
 router.post("/locations/:locationId/update", authenticateToken, async (req, res) => {
     try {
@@ -434,6 +522,17 @@ router.post("/locations/:locationId/update", authenticateToken, async (req, res)
 
         // Create alerts for all users who have this location
         const alerts = await WeatherAlert.createAlertsForLocation(weatherData, locationId);
+
+        // NEW: Trigger email processing for urgent alerts
+        if (alerts.some(alert => ['high', 'extreme'].includes(alert.severity))) {
+            console.log("🚨 High/Extreme alerts detected, processing emails...");
+            try {
+                await processPendingWeatherAlerts();
+            } catch (emailError) {
+                console.error("Email processing failed:", emailError);
+                // Don't fail the weather update if email fails
+            }
+        }
 
         res.json({
             success: true,

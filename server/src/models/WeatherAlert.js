@@ -47,6 +47,19 @@ const weatherAlertSchema = new mongoose.Schema({
     isRead: {
         type: Boolean,
         default: false
+    },
+    // NEW FIELDS FOR EMAIL FUNCTIONALITY
+    emailSent: {
+        type: Boolean,
+        default: false
+    },
+    emailSentAt: {
+        type: Date,
+        default: null
+    },
+    isForDefaultLocation: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true
@@ -84,6 +97,13 @@ weatherAlertSchema.methods.deactivate = function () {
     return this.save();
 };
 
+// NEW METHOD: Mark email as sent
+weatherAlertSchema.methods.markEmailAsSent = function () {
+    this.emailSent = true;
+    this.emailSentAt = new Date();
+    return this.save();
+};
+
 // Static method to create alerts for users who have this location
 weatherAlertSchema.statics.createAlertsForLocation = async function (weatherData, locationId) {
     const UserLocation = mongoose.model('UserLocation');
@@ -100,7 +120,8 @@ weatherAlertSchema.statics.createAlertsForLocation = async function (weatherData
                 ...alertData,
                 weatherDataId: weatherData._id,
                 locationId: locationId,
-                userId: userLocation.userId._id
+                userId: userLocation.userId._id,
+                isForDefaultLocation: userLocation.isDefault
             });
 
             await alert.save();
@@ -110,6 +131,40 @@ weatherAlertSchema.statics.createAlertsForLocation = async function (weatherData
     }
 
     return alerts;
+};
+
+// NEW STATIC METHOD: Get unsent email alerts for default locations (next 24 hours)
+weatherAlertSchema.statics.getUnsentEmailAlertsForDefaultLocations = async function () {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(23, 59, 59, 999);
+
+    return await this.find({
+        isForDefaultLocation: true,
+        emailSent: false,
+        isActive: true,
+        startTime: { $lte: tomorrow }
+    }).populate(['userId', 'locationId', 'weatherDataId']);
+};
+
+// NEW STATIC METHOD: Get alerts for user's default location
+weatherAlertSchema.statics.getAlertsForUserDefaultLocation = async function (userId, limit = 50) {
+    const UserLocation = mongoose.model('UserLocation');
+
+    // Find user's default location
+    const defaultLocation = await UserLocation.findOne({ userId, isDefault: true });
+
+    if (!defaultLocation) {
+        return [];
+    }
+
+    return await this.find({
+        userId,
+        locationId: defaultLocation.locationId,
+        isForDefaultLocation: true
+    }).populate(['locationId', 'weatherDataId'])
+        .sort({ createdAt: -1 })
+        .limit(parseInt(limit));
 };
 
 // Static method to check weather conditions and determine alert types
@@ -176,5 +231,8 @@ weatherAlertSchema.statics.checkWeatherConditions = async function (weatherData)
 weatherAlertSchema.index({ userId: 1, isActive: 1, createdAt: -1 });
 weatherAlertSchema.index({ locationId: 1, alertCondition: 1 });
 weatherAlertSchema.index({ weatherDataId: 1 });
+// NEW INDEXES
+weatherAlertSchema.index({ isForDefaultLocation: 1, emailSent: 1, startTime: 1 });
+weatherAlertSchema.index({ userId: 1, isForDefaultLocation: 1 });
 
 export default mongoose.model("WeatherAlert", weatherAlertSchema);
