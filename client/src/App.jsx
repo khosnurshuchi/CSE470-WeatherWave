@@ -21,6 +21,9 @@ import WeatherAlerts from './pages/WeatherAlerts';
 import WeatherDashboard from './pages/WeatherDashboard';
 import LocationManager from './pages/LocationManager';
 
+// ✅ Import Home page
+import Home from "./pages/HomePage";
+
 // Loading component
 function LoadingScreen() {
   return (
@@ -68,85 +71,28 @@ function AppRouter() {
     <>
       <Navbar />
       <Routes>
-
         {/* Public Routes - Only accessible when NOT authenticated */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route
-          path="/forgot-password"
-          element={<PublicRoute><ForgotPassword /></PublicRoute>}
-        />
-        <Route
-          path="/reset-password/:token"
-          element={<PublicRoute><ResetPassword /></PublicRoute>}
-        />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
         {/* Email verification routes - Always accessible */}
         <Route path="/verify-email/:token" element={<PublicRoute><VerifyEmail /></PublicRoute>} />
         <Route path="/resend-verification" element={<PublicRoute><ResendVerification /></PublicRoute>} />
 
-        {/* Protected Routes - Require authentication and verification */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        {/* Protected Routes */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/weather" element={<ProtectedRoute><WeatherDashboard /></ProtectedRoute>} />
+        <Route path="/alerts" element={<ProtectedRoute><WeatherAlerts /></ProtectedRoute>} />
+        <Route path="/locations" element={<ProtectedRoute><LocationManager /></ProtectedRoute>} />
 
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Weather Routes - Protected */}
-        <Route
-          path="/weather"
-          element={
-            <ProtectedRoute>
-              <WeatherDashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/alerts"
-          element={
-            <ProtectedRoute>
-              <WeatherAlerts />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/locations"
-          element={
-            <ProtectedRoute>
-              <LocationManager />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Default route */}
-        <Route
-          path="/"
-          element={
-            user ? <Navigate to="/weather" replace /> : <Navigate to="/login" replace />
-          }
-        />
+        {/* ✅ Home Page - Always accessible */}
+        <Route path="/" element={<Home />} />
 
         {/* Catch-all route */}
-        <Route
-          path="*"
-          element={
-            user ? <Navigate to="/weather" replace /> : <Navigate to="/login" replace />
-          }
-        />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

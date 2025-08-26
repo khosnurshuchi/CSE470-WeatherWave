@@ -429,23 +429,7 @@ const handleResendVerification = () => {
           flexDirection: 'column',
           gap: '0.75rem'
         }}>
-          <button
-            onClick={handleForgotPassword}
-            style={{
-              fontSize: '0.875rem',
-              color: '#fff',
-              textDecoration: 'underline',
-              fontWeight: '500',
-              transition: 'opacity 0.2s ease',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => e.target.style.opacity = '0.8'}
-            onMouseLeave={(e) => e.target.style.opacity = '1'}
-          >
-            Forgot your password?
-          </button>
+          
           
           <button
             onClick={handleResendVerification}

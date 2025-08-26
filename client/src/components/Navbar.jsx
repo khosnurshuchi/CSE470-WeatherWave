@@ -1,8 +1,10 @@
+// Replace your current Navbar component with this updated version:
+
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { LogOut, User, Menu, X, Cloud, MapPin, Home, Sun, Moon, Bell } from 'lucide-react';
+import { LogOut, User, Menu, X, Cloud, MapPin, Home, Sun, Moon, Bell, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
@@ -17,7 +19,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     toast.success('Logged out successfully');
-    navigate('/login');
+    navigate('/');
     setIsMenuOpen(false);
   };
 
@@ -28,10 +30,6 @@ const Navbar = () => {
   const isActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(path);
   };
-
-  if (!isAuthenticated) {
-    return null;
-  }
 
   const navbarStyle = {
     background: themeStyles.cardBackground,
@@ -187,118 +185,125 @@ const Navbar = () => {
             position: 'relative'
           }}>
             {/* Logo */}
-            <Link to="/dashboard" style={logoStyle}>
+            <Link to="/" style={logoStyle}>
               <div style={logoIconStyle}>
                 <Cloud color="white" size={20} />
               </div>
               <span style={logoTextStyle}>WeatherWave</span>
             </Link>
 
-            {/* Desktop Navigation - Hidden on mobile */}
+            {/* Desktop Navigation */}
             <div style={{
               display: 'none',
               '@media (min-width: 768px)': {
                 display: 'flex'
               }
             }} className="hidden md:flex md:items-center md:gap-2">
-              <Link
-                to="/dashboard"
-                style={navLinkStyle('/dashboard')}
-                onMouseEnter={(e) => {
-                  if (!isActive('/dashboard')) {
-                    e.target.style.background = theme === 'dark'
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : 'rgba(255, 255, 255, 0.15)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive('/dashboard')) {
-                    e.target.style.background = 'transparent';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }
-                }}
-              >
-                <Home size={18} />
-                <span>Dashboard</span>
-              </Link>
+              
 
-              <Link
-                to="/weather"
-                style={navLinkStyle('/weather')}
-                onMouseEnter={(e) => {
-                  if (!isActive('/weather')) {
-                    e.target.style.background = theme === 'dark'
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : 'rgba(255, 255, 255, 0.15)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive('/weather')) {
-                    e.target.style.background = 'transparent';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }
-                }}
-              >
-                <Cloud size={18} />
-                <span>Weather</span>
-              </Link>
+              {/* Show authenticated routes only if user is logged in */}
+              {isAuthenticated && (
+                <>
+                  <Link
+                    to="/dashboard"
+                    style={navLinkStyle('/dashboard')}
+                    onMouseEnter={(e) => {
+                      if (!isActive('/dashboard')) {
+                        e.target.style.background = theme === 'dark'
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : 'rgba(255, 255, 255, 0.15)';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive('/dashboard')) {
+                        e.target.style.background = 'transparent';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }
+                    }}
+                  >
+                    <User size={18} />
+                    <span>Dashboard</span>
+                  </Link>
 
-              <Link
-                to="/locations"
-                style={navLinkStyle('/locations')}
-                onMouseEnter={(e) => {
-                  if (!isActive('/locations')) {
-                    e.target.style.background = theme === 'dark'
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : 'rgba(255, 255, 255, 0.15)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive('/locations')) {
-                    e.target.style.background = 'transparent';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }
-                }}
-              >
-                <MapPin size={18} />
-                <span>Locations</span>
-              </Link>
+                  <Link
+                    to="/weather"
+                    style={navLinkStyle('/weather')}
+                    onMouseEnter={(e) => {
+                      if (!isActive('/weather')) {
+                        e.target.style.background = theme === 'dark'
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : 'rgba(255, 255, 255, 0.15)';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive('/weather')) {
+                        e.target.style.background = 'transparent';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }
+                    }}
+                  >
+                    <Cloud size={18} />
+                    <span>Weather</span>
+                  </Link>
 
-              <Link
-                to="/alerts"
-                style={navLinkStyle('/alerts')}
-                onMouseEnter={(e) => {
-                  if (!isActive('/alerts')) {
-                    e.target.style.background = theme === 'dark'
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : 'rgba(255, 255, 255, 0.15)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive('/alerts')) {
-                    e.target.style.background = 'transparent';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }
-                }}
-              >
-                <Bell size={18} />
-                <span>Alerts</span>
-              </Link>
+                  <Link
+                    to="/locations"
+                    style={navLinkStyle('/locations')}
+                    onMouseEnter={(e) => {
+                      if (!isActive('/locations')) {
+                        e.target.style.background = theme === 'dark'
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : 'rgba(255, 255, 255, 0.15)';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive('/locations')) {
+                        e.target.style.background = 'transparent';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }
+                    }}
+                  >
+                    <MapPin size={18} />
+                    <span>Locations</span>
+                  </Link>
+
+                  <Link
+                    to="/alerts"
+                    style={navLinkStyle('/alerts')}
+                    onMouseEnter={(e) => {
+                      if (!isActive('/alerts')) {
+                        e.target.style.background = theme === 'dark'
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : 'rgba(255, 255, 255, 0.15)';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive('/alerts')) {
+                        e.target.style.background = 'transparent';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }
+                    }}
+                  >
+                    <Bell size={18} />
+                    <span>Alerts</span>
+                  </Link>
+                </>
+              )}
             </div>
 
-            {/* Right side - Theme toggle, User menu, Mobile menu */}
+            {/* Right side - Theme toggle, User menu/Login, Mobile menu */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               {/* Theme Toggle */}
               <button
@@ -321,70 +326,96 @@ const Navbar = () => {
                 {theme === 'light' ? <Moon size={16} color="white" /> : <Sun size={16} color="#1e293b" />}
               </button>
 
-              {/* Desktop User Menu - Hidden on mobile */}
+              {/* Desktop User Menu/Login */}
               <div style={{
                 display: 'none',
                 '@media (min-width: 768px)': {
                   display: 'flex'
                 }
               }} className="hidden md:flex md:items-center md:gap-2">
-                <Link
-                  to="/profile"
-                  style={userButtonStyle}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = theme === 'dark'
-                      ? 'rgba(59, 130, 246, 0.1)'
-                      : 'rgba(255, 255, 255, 0.15)';
-                    e.target.style.color = themeStyles.textPrimary;
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                    e.target.style.color = themeStyles.textSecondary;
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                >
-                  <div style={{
-                    width: '2rem',
-                    height: '2rem',
-                    background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-                    borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)'
-                  }}>
-                    <User size={14} color="white" />
-                  </div>
-                  <span>{user?.fullName}</span>
-                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      to="/profile"
+                      style={userButtonStyle}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = theme === 'dark'
+                          ? 'rgba(59, 130, 246, 0.1)'
+                          : 'rgba(255, 255, 255, 0.15)';
+                        e.target.style.color = themeStyles.textPrimary;
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'transparent';
+                        e.target.style.color = themeStyles.textSecondary;
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    >
+                      <div style={{
+                        width: '2rem',
+                        height: '2rem',
+                        background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                        borderRadius: '10px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)'
+                      }}>
+                        <User size={14} color="white" />
+                      </div>
+                      <span>{user?.fullName}</span>
+                    </Link>
 
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    ...userButtonStyle,
-                    marginLeft: '0.5rem',
-                    color: '#ef4444'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = 'rgba(239, 68, 68, 0.1)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 6px 25px rgba(239, 68, 68, 0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = 'transparent';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                >
-                  <LogOut size={16} />
-                  <span>Logout</span>
-                </button>
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        ...userButtonStyle,
+                        marginLeft: '0.5rem',
+                        color: '#ef4444'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 6px 25px rgba(239, 68, 68, 0.15)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'transparent';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    >
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/login"
+                    style={userButtonStyle}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = theme === 'dark'
+                        ? 'rgba(59, 130, 246, 0.1)'
+                        : 'rgba(255, 255, 255, 0.15)';
+                      e.target.style.color = themeStyles.textPrimary;
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = `0 6px 25px ${theme === 'dark' ? 'rgba(59, 130, 246, 0.15)' : 'rgba(0, 0, 0, 0.1)'}`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = themeStyles.textSecondary;
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                  >
+                    <LogIn size={16} />
+                    <span>Login</span>
+                  </Link>
+                )}
               </div>
 
-              {/* Mobile menu button - Visible on mobile only */}
+              {/* Mobile menu button */}
               <button
                 onClick={toggleMenu}
                 style={menuButtonStyle}
@@ -409,63 +440,91 @@ const Navbar = () => {
           {isMenuOpen && (
             <div style={mobileMenuStyle} className="md:hidden">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {/* Always show Home in mobile */}
                 <Link
-                  to="/dashboard"
-                  style={navLinkStyle('/dashboard')}
+                  to="/"
+                  style={navLinkStyle('/')}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <Home size={20} />
-                  <span>Dashboard</span>
+                  <span>Home</span>
                 </Link>
 
-                <Link
-                  to="/weather"
-                  style={navLinkStyle('/weather')}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Cloud size={20} />
-                  <span>Weather</span>
-                </Link>
+                {/* Show authenticated routes only if user is logged in */}
+                {isAuthenticated ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      style={navLinkStyle('/dashboard')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User size={20} />
+                      <span>Dashboard</span>
+                    </Link>
 
-                <Link
-                  to="/locations"
-                  style={navLinkStyle('/locations')}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <MapPin size={20} />
-                  <span>Locations</span>
-                </Link>
+                    <Link
+                      to="/weather"
+                      style={navLinkStyle('/weather')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Cloud size={20} />
+                      <span>Weather</span>
+                    </Link>
 
-                <Link
-                  to="/alerts"
-                  style={navLinkStyle('/alerts')}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Bell size={20} />
-                  <span>Weather Alerts</span>
-                </Link>
+                    <Link
+                      to="/locations"
+                      style={navLinkStyle('/locations')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <MapPin size={20} />
+                      <span>Locations</span>
+                    </Link>
 
-                <Link
-                  to="/profile"
-                  style={navLinkStyle('/profile')}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <User size={20} />
-                  <span>Edit Profile</span>
-                </Link>
+                    <Link
+                      to="/alerts"
+                      style={navLinkStyle('/alerts')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Bell size={20} />
+                      <span>Weather Alerts</span>
+                    </Link>
 
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    ...navLinkStyle(),
-                    color: '#ef4444',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '2px solid rgba(239, 68, 68, 0.2)'
-                  }}
-                >
-                  <LogOut size={20} />
-                  <span>Logout</span>
-                </button>
+                    <Link
+                      to="/profile"
+                      style={navLinkStyle('/profile')}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User size={20} />
+                      <span>Edit Profile</span>
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        ...navLinkStyle(),
+                        color: '#ef4444',
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '2px solid rgba(239, 68, 68, 0.2)'
+                      }}
+                    >
+                      <LogOut size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/login"
+                    style={{
+                      ...navLinkStyle('/login'),
+                      background: 'rgba(59, 130, 246, 0.1)',
+                      border: '2px solid rgba(59, 130, 246, 0.2)'
+                    }}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <LogIn size={20} />
+                    <span>Login</span>
+                  </Link>
+                )}
               </div>
             </div>
           )}

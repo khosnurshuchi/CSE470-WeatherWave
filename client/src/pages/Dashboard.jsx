@@ -49,6 +49,9 @@ const Dashboard = () => {
   const handleViewWeather = () => {
     navigate('/weather');
   };
+  const handleViewWeatherAlerts = () => {
+    navigate('/alerts');
+  };
 
   const handleManageLocations = () => {
     navigate('/locations');
@@ -152,54 +155,7 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{
-                width: '4rem',
-                height: '4rem',
-                background: themeStyles.cardBackground,
-                borderRadius: '1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: `0 4px 30px ${themeStyles.shadow}`,
-                backdropFilter: 'blur(10px)'
-              }}>
-                <span style={{ color: themeStyles.textPrimary, fontWeight: 'bold', fontSize: '1.5rem' }}>
-                  {user?.fullName?.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <button
-                onClick={handleLogout}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  padding: '0.75rem 1.5rem',
-                  background: 'rgba(220, 38, 38, 0.8)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.75rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  transition: 'all 0.2s ease',
-                  boxShadow: '0 4px 30px rgba(220, 38, 38, 0.3)',
-                  backdropFilter: 'blur(10px)'
-                }}
-                className="mobile-full-width mobile-text-sm"
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'scale(1.02)';
-                  e.target.style.background = 'rgba(185, 28, 28, 0.9)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'scale(1)';
-                  e.target.style.background = 'rgba(220, 38, 38, 0.8)';
-                }}
-              >
-                <LogOut size={16} />
-                <span className="mobile-hidden">Logout</span>
-              </button>
-            </div>
+            
           </div>
         </div>
 
@@ -449,24 +405,14 @@ const Dashboard = () => {
                   description: 'Update your information',
                   action: handleEditProfile
                 },
-                {
-                  icon: <Settings size={24} color="white" />,
-                  title: 'Security Settings',
-                  description: 'Manage your password',
-                  action: handleSecuritySettings
-                },
+               
                 {
                   icon: <AlertTriangle size={24} color="white" />,
                   title: 'Weather Alerts',
                   description: 'Configure notifications',
-                  action: handleViewWeather
+                  action: handleViewWeatherAlerts
                 },
-                {
-                  icon: <Activity size={24} color="white" />,
-                  title: 'Activity Log',
-                  description: 'View recent activity',
-                  action: handleActivityLog
-                }
+                
               ].map((action, index) => (
                 <div
                   key={index}
@@ -521,35 +467,7 @@ const Dashboard = () => {
                 </div>
               ))}
 
-              {/* See More Button */}
-              <button style={{
-                width: '100%',
-                padding: '15px 0',
-                cursor: 'pointer',
-                background: 'rgba(64, 154, 199, 0.8)',
-                border: 'none',
-                fontSize: '1rem',
-                color: '#fff',
-                borderRadius: '0.8rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.7rem',
-                transition: '0.5s',
-                backdropFilter: 'blur(10px)'
-              }}
-                onMouseEnter={(e) => {
-                  e.target.style.background = 'transparent';
-                  e.target.style.border = '1px solid #fff';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.background = 'rgba(64, 154, 199, 0.8)';
-                  e.target.style.border = 'none';
-                }}
-              >
-                <span>See More</span>
-                <span style={{ fontSize: '1.2rem' }}>→</span>
-              </button>
+              
             </div>
           </div>
         </div>
