@@ -408,26 +408,41 @@ const WeatherAlerts = () => {
                                 }}>
                                     Severity
                                 </label>
-                                <select
-                                    value={selectedSeverity}
-                                    onChange={(e) => setSelectedSeverity(e.target.value)}
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.75rem',
-                                        background: themeStyles.cardBackground,
-                                        border: `1px solid ${themeStyles.border}`,
-                                        borderRadius: '8px',
-                                        color: themeStyles.textPrimary,
-                                        fontSize: '0.875rem',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    {severityOptions.map(option => (
-                                        <option key={option.value} value={option.value}>
-                                            {option.label}
-                                        </option>
-                                    ))}
-                                </select>
+                               <select
+                        value={selectedSeverity}
+                        onChange={(e) => setSelectedSeverity(e.target.value)}
+                        style={{
+                            width: '100%',
+                            padding: '0.75rem',
+                            background: '#ffffff', // Changed to white background
+                            border: '1px solid #e5e7eb', // Light gray border
+                            borderRadius: '8px',
+                            color: '#374151', // Dark gray text
+                            fontSize: '0.875rem',
+                            cursor: 'pointer',
+                            outline: 'none',
+                            appearance: 'none', // Removes default browser styling
+                            backgroundImage: `url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6,9 12,15 18,9'></polyline></svg>")`,
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'right 0.75rem center',
+                            backgroundSize: '16px',
+                            paddingRight: '2.5rem'
+                        }}
+                    >
+                        {severityOptions.map(option => (
+                            <option 
+                                key={option.value} 
+                                value={option.value}
+                                style={{
+                                    background: '#ffffff', // White background for options
+                                    color: '#374151', // Dark gray text for options
+                                    padding: '0.5rem'
+                                }}
+                            >
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
                             </div>
 
                             <div>

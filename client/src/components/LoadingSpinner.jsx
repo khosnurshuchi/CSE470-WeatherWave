@@ -48,7 +48,7 @@ const LoadingSpinner = ({ size = 'medium', text = 'Loading...' }) => {
 
   return (
     <div style={containerStyle}>
-      {/* Animated Background Elements - matching dashboard */}
+      {/* Animated Background Elements */}
       <div style={{
         position: 'fixed',
         top: 0,
